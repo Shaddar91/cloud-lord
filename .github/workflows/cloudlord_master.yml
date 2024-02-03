@@ -1,4 +1,4 @@
-name: skincraft master
+name: cloud-lord master
 on:
   push:
     branches:
