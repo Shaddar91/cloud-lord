@@ -1,0 +1,97 @@
+.App {
+  background-image: url('./assets/cool.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+  min-height: 100vh;
+}
+
+.App-content {
+  padding-top: 64px; /* Adjust this value to match your AppBar's height */
+  min-height: calc(100vh - 64px); /* Take the AppBar's height into account */
+  background: linear-gradient(black, transparent), url('./assets/cool.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center center; /* This ensures the image is centered */
+}
+
+
+
+/* Global Dark Overlay */
+.App-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+  z-index: -1; /* Behind content */
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-image: url('./assets/cool.png');
+  background-size: cover;
+  background-repeat: repeat;
+  background-attachment: fixed; /* Keep the background fixed during scroll */
+  position: relative; /* Needed for overlay positioning */
+  min-height: 100vh; /* Adjust the height as needed */
+}
+
+/* Overlay style */
+.App-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+  z-index: 1; /* Ensure it's below the content */
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+/* ... existing styles ... */
+
+/* Sections */
+section {
+  min-height: 100vh; /* Adjust height as needed */
+  /* Other styles as needed */
+}
+
+/* Right transparent div */
+.right-div {
+  background: rgba(255, 255, 255, 0.3); /* Semi-transparent white */
+  width: 300px; /* Adjust width as needed */
+  height: 100vh; /* Full height */
+  position: fixed; /* Fixed position */
+  right: 0; /* Stick to the right */
+  top: 0; /* Stick to the top */
+  z-index: 10; /* Above other content */
+}
+
+/* ... existing styles ... */
+
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
