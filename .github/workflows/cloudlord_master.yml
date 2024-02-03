@@ -1,0 +1,43 @@
+name: skincraft master
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: cloudlord-master
+    steps:
+      - name: Assume Role
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.CICD_ROLE }}
+          aws-region: eu-central-1
+          role-session-name: cicd
+          aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.CICD_ACCESS_KEY }}
+          role-duration-seconds: 1200     
+      - uses: actions/checkout@v3
+        id: checkout
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20.9.0
+      - name: Cache node modules
+      # Upload the app on S3 bucket
+      - name: Build React App and upload to S3
+        id: build-project
+        run: |
+          npm install
+          npm run build
+          cd dist
+          aws s3 sync . s3://${{ secrets.BUCKET }} --cache-control "max-age=120000" --delete --exclude ".git/*" --exclude ".github/*" --exclude "README*"
+      - name: Invalidate CloudFront
+        uses: chetan/invalidate-cloudfront-action@v2
+        env:
+          DISTRIBUTION: ${{ secrets.DISTRIBUTION_ID }}
+          PATHS: "/index.html"
