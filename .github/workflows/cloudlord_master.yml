@@ -27,7 +27,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20.9.0
-      - name: Cache node modules
       # Upload the app on S3 bucket
       - name: Build React App and upload to S3
         id: build-project
