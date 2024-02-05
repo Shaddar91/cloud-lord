@@ -8,12 +8,12 @@ const About = () => {
       display: 'flex', // Enable flex container
       flexDirection: 'column', // Stack children vertically
       alignItems: 'flex-start', // Align children to the start of the container (left side)
-      padding: '4rem',
+      padding: '2rem',
       backgroundColor: 'rgba(0, 0, 0, 0.6)', // Semi-transparent background
       color: 'green',
       borderRadius: '10px', // Optional: adds rounded corners
-      maxWidth: '11000px', // Adjust the width as needed
-      margin: '5rem', // Adjust space from top and auto for left and right margins
+      maxWidth: '2500px', // Adjust the width as needed
+      margin: '1rem', // Adjust space from top and auto for left and right margins
       marginLeft: '1', // Adjust space from top
     }}>
       <Typography variant="h4" gutterBottom>
