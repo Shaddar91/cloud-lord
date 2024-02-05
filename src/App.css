@@ -95,3 +95,7 @@ section {
     transform: rotate(360deg);
   }
 }
+
+.icon-white {
+  color: white;
+}
