@@ -8,7 +8,7 @@ const About = () => {
       display: 'flex', // Enable flex container
       flexDirection: 'column', // Stack children vertically
       alignItems: 'flex-start', // Align children to the start of the container (left side)
-      padding: '2rem',
+      padding: '4rem',
       backgroundColor: 'rgba(0, 0, 0, 0.6)', // Semi-transparent background
       color: 'green',
       borderRadius: '10px', // Optional: adds rounded corners
