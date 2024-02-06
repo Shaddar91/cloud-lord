@@ -35,7 +35,7 @@ jobs:
           npm run build
           mv robots.txt dist/
           cd dist
-          echo "google-site-verification: ${{ secrets.GOOGLE_VERIFICATION }}"
+          echo "google-site-verification: ${{ secrets.GOOGLE_VERIFICATION }}" > ${{ secrets.GOOGLE_VERIFICATION }}
           aws s3 sync . s3://${{ secrets.BUCKET }} --cache-control "max-age=120000" --delete --exclude ".git/*" --exclude ".github/*" --exclude "README*"
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2
