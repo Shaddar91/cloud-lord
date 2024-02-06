@@ -43,7 +43,7 @@ const Services = () => {
         Services
       </Typography>
       <Typography variant="body1" paragraph>
-        We provide cutting-edge cloud solutions and DevOps services.
+        Providing cutting-edge cloud solutions and DevOps services.
       </Typography>
       <Box sx={{
         display: 'flex',
@@ -61,8 +61,8 @@ const Services = () => {
         {/* AWS */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <FontAwesomeIcon icon={faAws} size="4x" />
-          <Typography variant="caption">AWS</Typography>
-          <Typography variant="body2">Secure cloud services</Typography>
+          <Typography variant="caption"></Typography>
+          <Typography variant="body2">AWS cloud services</Typography>
         </Box>
         {/* Docker */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
@@ -79,30 +79,30 @@ const Services = () => {
         {/* Ansible */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <Icon icon={ansibleIcon} width="64" height="64" />
-          <Typography variant="caption">Ansible</Typography>
-          <Typography variant="body2">Open-source automation</Typography>
+          <Typography variant="caption"></Typography>
+          <Typography variant="body2">Ansible for VM automation</Typography>
         </Box>
         {/* Redis */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <Icon icon={redisIcon} width="64" height="64" />
-          <Typography variant="caption">Redis</Typography>
-          <Typography variant="body2">In-memory data structure store</Typography>
+          <Typography variant="caption"></Typography>
+          <Typography variant="body2">Redis In-memory data structure store</Typography>
         </Box>
         {/* Rust */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <img src={whiteRustLogo} alt="Rust" style={{ width: '79px', height: '64px' }} />
-          <Typography variant="caption">Rust</Typography>
-          <Typography variant="body2">Memory-safe programming</Typography>
+          <Typography variant="caption"></Typography>
+          <Typography variant="body2">Rust</Typography>
         </Box>
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <Icon icon={postgresIcon} width="64" height="64" />
-          <Typography variant="caption">PostgreSQL</Typography>
-          <Typography variant="body2">Powerful open source database</Typography>
+          <Typography variant="caption"></Typography>
+          <Typography variant="body2">PostgreSQL</Typography>
         </Box>
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <Icon icon={mysqlIcon} width="64" height="64" />
-          <Typography variant="caption">MySQL</Typography>
-          <Typography variant="body2">Popular open source database</Typography>
+          <Typography variant="caption"></Typography>
+          <Typography variant="body2">MySQL</Typography>
         </Box>
 
         {/* Helm Icon */}
@@ -114,13 +114,13 @@ const Services = () => {
         {/* cicd*/}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <img src={cicdLogo} alt="cicd" style={{ width: '89px', height: '64px' }} />
-          <Typography variant="caption">CICD</Typography>
+          <Typography variant="caption"></Typography>
           <Typography variant="body2">CICD</Typography>
         </Box>
         {/* python */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <img src={pythonLogo} alt="python" style={{ width: '100px', height: '64px' }} />
-          <Typography variant="caption">Python</Typography>
+          <Typography variant="caption"></Typography>
           <Typography variant="body2">Python</Typography>
         </Box>
       </Box>
