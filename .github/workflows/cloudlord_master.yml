@@ -33,10 +33,11 @@ jobs:
         run: |
           npm install
           npm run build
+          mv robots.txt dist/
           cd dist
           aws s3 sync . s3://${{ secrets.BUCKET }} --cache-control "max-age=120000" --delete --exclude ".git/*" --exclude ".github/*" --exclude "README*"
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2
         env:
           DISTRIBUTION: ${{ secrets.DISTRIBUTION_ID }}
-          PATHS: "/index.html"
+          PATHS: "/*"
