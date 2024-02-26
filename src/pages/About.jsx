@@ -20,7 +20,7 @@ const About = () => {
         Cloud Lord
       </Typography>
       <Typography variant="body1" paragraph>
-        Is as a specialized consultancy agency, specialized in creating infrastructure solutions with security in mind following IAC standards. Services include:
+        Is a specialized consultancy agency, specialized in creating infrastructure solutions with security in mind following IAC standards. Services include:
         Cloud Solutions: Professional in AWS for robust, scalable cloud infrastructure.
         IaC Expertise: Utilizing Terraform and Pulumi for efficient, consistent infrastructure deployment.
         Container Orchestration: Skilled in Kubernetes management for streamlined container deployment.

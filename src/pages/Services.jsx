@@ -108,7 +108,7 @@ const Services = () => {
         {/* Helm Icon */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px', margin: '10px' }}>
           <Icon icon={helmIcon} width="64" height="64" />
-          <Typography variant="caption">Helm</Typography>
+          <Typography variant="caption"></Typography>
           <Typography variant="body2">Kubernetes package manager</Typography>
         </Box>
         {/* cicd*/}
