@@ -74,7 +74,7 @@ const Services = () => {
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <Icon icon={kubernetesIcon} width="64" height="64" />
           <Typography variant="caption">Kubernetes</Typography>
-          <Typography variant="body2">Automated container deployment</Typography>
+          <Typography variant="body2"></Typography>
         </Box>
         {/* Ansible */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
