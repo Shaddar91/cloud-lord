@@ -71,7 +71,7 @@ const Services = () => {
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <FontAwesomeIcon icon={faDocker} size="4x" />
           <Typography variant="caption">Docker</Typography>
-          <Typography variant="body2">Container platform</Typography>
+          <Typography variant="body2"></Typography>
         </Box>
         {/* Kubernetes */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
