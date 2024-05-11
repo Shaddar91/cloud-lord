@@ -21,9 +21,12 @@ import whiteRustLogo from '../assets/rust.png'; // Path to your white Rust logo 
 import terraformLogo from '../assets/terraform.png'; // Path to your Terraform logo PNG
 import cicdLogo from '../assets/cicd.png'; // Path to your Terraform logo PNG
 import pythonLogo from '../assets/python.png'; // Path to your Terraform logo PNG
-
-// ...rest of your component
-
+import hetznerLogo from '../assets/hetzner.svg';
+import ipfsLogo from '../assets/ipfs.png';
+import nextjsLogo from '../assets/nextjs.png';
+import nodeJsLogo from '../assets/nodejs.png';
+import vaultLogo from '../assets/vault.png';
+import vercelLogo from '../assets/vercel.png';
 
 const Services = () => {
   return (
@@ -88,7 +91,7 @@ const Services = () => {
           <Typography variant="caption"></Typography>
           <Typography variant="body2">Redis In-memory data structure store</Typography>
         </Box>
-        {/* Rust */}
+        Rust
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <img src={whiteRustLogo} alt="Rust" style={{ width: '79px', height: '64px' }} />
           <Typography variant="caption"></Typography>
@@ -122,6 +125,42 @@ const Services = () => {
           <img src={pythonLogo} alt="python" style={{ width: '100px', height: '64px' }} />
           <Typography variant="caption"></Typography>
           <Typography variant="body2">Python</Typography>
+        </Box>
+        {/*hetzner*/}
+        <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
+          <img src={hetznerLogo} alt="hetzner" style={{ width: '100px', height: '64px' }} />
+          <Typography variant="caption"></Typography>
+          <Typography variant="body2">Hetzner Cloud</Typography>
+        </Box>
+        {/* ipfs */}
+        <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
+          <img src={ipfsLogo} alt="ipfs" style={{ width: '100px', height: '64px' }} />
+          <Typography variant="caption"></Typography>
+          <Typography variant="body2">Ipfs</Typography>
+        </Box>
+        {/* next */}
+        <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
+          <img src={nextjsLogo} alt="nextJs" style={{ width: '100px', height: '64px' }} />
+          <Typography variant="caption"></Typography>
+          <Typography variant="body2">nextJS</Typography>
+        </Box>
+        {/* nodejs */}
+        <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
+          <img src={nodeJsLogo} alt="nodeJS" style={{ width: '100px', height: '64px' }} />
+          <Typography variant="caption"></Typography>
+          <Typography variant="body2">nodeJS</Typography>
+        </Box>
+        {/* vault */}
+        <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
+          <img src={vaultLogo} alt="vault" style={{ width: '100px', height: '64px' }} />
+          <Typography variant="caption"></Typography>
+          <Typography variant="body2">Hashicorp Vault</Typography>
+        </Box>
+        {/* vercel */}
+        <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
+          <img src={vercelLogo} alt="vercel" style={{ width: '100px', height: '64px' }} />
+          <Typography variant="caption"></Typography>
+          <Typography variant="body2">Vercel</Typography>
         </Box>
       </Box>
     </Box>
