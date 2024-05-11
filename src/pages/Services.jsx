@@ -89,7 +89,7 @@ const Services = () => {
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <Icon icon={redisIcon} width="64" height="64" />
           <Typography variant="caption"></Typography>
-          <Typography variant="body2">Redis In-memory data structure store</Typography>
+          <Typography variant="body2">Redis In-memory data store</Typography>
         </Box>
         {/* Rust
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
