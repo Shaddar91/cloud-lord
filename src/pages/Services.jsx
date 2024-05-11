@@ -91,12 +91,12 @@ const Services = () => {
           <Typography variant="caption"></Typography>
           <Typography variant="body2">Redis In-memory data structure store</Typography>
         </Box>
-        Rust
+        {/* Rust
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <img src={whiteRustLogo} alt="Rust" style={{ width: '79px', height: '64px' }} />
           <Typography variant="caption"></Typography>
           <Typography variant="body2">Rust</Typography>
-        </Box>
+        </Box> */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
           <Icon icon={postgresIcon} width="64" height="64" />
           <Typography variant="caption"></Typography>
@@ -134,31 +134,31 @@ const Services = () => {
         </Box>
         {/* ipfs */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
-          <img src={ipfsLogo} alt="ipfs" style={{ width: '100px', height: '64px' }} />
+          <img src={ipfsLogo} alt="ipfs" style={{ width: '64px', height: '64px' }} />
           <Typography variant="caption"></Typography>
           <Typography variant="body2">Ipfs</Typography>
         </Box>
         {/* next */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
-          <img src={nextjsLogo} alt="nextJs" style={{ width: '100px', height: '64px' }} />
+          <img src={nextjsLogo} alt="nextJs" style={{ width: '64px', height: '64px' }} />
           <Typography variant="caption"></Typography>
           <Typography variant="body2">nextJS</Typography>
         </Box>
         {/* nodejs */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
-          <img src={nodeJsLogo} alt="nodeJS" style={{ width: '100px', height: '64px' }} />
+          <img src={nodeJsLogo} alt="nodeJS" style={{ width: '64px', height: '64px' }} />
           <Typography variant="caption"></Typography>
           <Typography variant="body2">nodeJS</Typography>
         </Box>
         {/* vault */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
-          <img src={vaultLogo} alt="vault" style={{ width: '100px', height: '64px' }} />
+          <img src={vaultLogo} alt="vault" style={{ width: '84px', height: '64px' }} />
           <Typography variant="caption"></Typography>
           <Typography variant="body2">Hashicorp Vault</Typography>
         </Box>
         {/* vercel */}
         <Box sx={{ textAlign: 'center', maxWidth: '120px' }}>
-          <img src={vercelLogo} alt="vercel" style={{ width: '100px', height: '64px' }} />
+          <img src={vercelLogo} alt="vercel" style={{ width: '64px', height: '64px' }} />
           <Typography variant="caption"></Typography>
           <Typography variant="body2">Vercel</Typography>
         </Box>
