@@ -2,18 +2,35 @@
   background-image: url('./assets/cool.png');
   background-size: cover;
   background-repeat: no-repeat;
-  background-attachment: fixed; 
+  background-attachment: fixed;
   min-height: 100vh;
 }
 
 .App-content {
-  padding-top: 64px; /* Adjust this value to match your AppBar's height */
-  min-height: calc(100vh - 64px); /* Take the AppBar's height into account */
-  background: linear-gradient(black, transparent), url('./assets/cool.png');
+  min-height: 100vh;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.7)), url('./assets/cool.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-position: center center; /* This ensures the image is centered */
+  background-position: center center;
+  padding-bottom: 2rem;
+}
+
+.element {
+  padding: 2rem 0;
+  scroll-margin-top: 80px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .element {
+    padding: 1rem 0;
+    scroll-margin-top: 70px;
+  }
+
+  .App-content {
+    background-attachment: scroll;
+  }
 }
 
 
