@@ -1,120 +1,164 @@
-# Cloud Lord - IT Consultancy Website
+# cloud-lord.com
 
-Professional IT consultancy website showcasing cloud infrastructure, DevOps, and AI engineering services.
+*Personal portfolio + IT consultancy site — Matomo-tracked with consent,
+Blazar-powered contact form, deployed via Azure CloudFront.*
 
-## Tech Stack
+Tagline: cloud infrastructure, DevOps, and AI engineering services for
+teams that need senior hands without a full-time hire.
 
-- **React**: 18.2.0
-- **Vite**: 5.0.8 (Build tool)
-- **Material-UI**: 5.15.6 (Component library)
-- **React Router DOM**: 6.21.3
-- **React Helmet**: 6.1.0 (SEO)
-- **React Scroll**: 1.9.0 (Smooth scrolling)
+## Stack
 
-## Getting Started
+| Layer          | Choice                                |
+|----------------|---------------------------------------|
+| Build          | Vite 5                                |
+| Framework      | React 18                              |
+| UI             | MUI 5 (`@mui/material`, `@mui/icons-material`) |
+| Routing        | react-router-dom 6                    |
+| SEO            | react-helmet 6                        |
+| Tracking       | Matomo (consent-gated, self-hosted)   |
+| Contact form   | Blazar (Rust backend, see `../../../blazar/`) |
 
-### Prerequisites
+## Design
 
-- Node.js (v16 or higher recommended)
-- npm or yarn
+Design originally delivered as a zip from a Claude-Design session;
+ported to React by component C22. The reference spec lives at:
 
-### Installation
+- `design-package/new-design/HANDOFF.md` — stability contracts D1–D5
+  (colors, spacing, fonts, breakpoints, motion tokens).
+- `design-package/screenshots/` — canonical visual reference.
 
-```bash
-npm install
-```
+Design tokens (oklch color palette) are defined in `src/theme.js` and
+consumed via MUI's `ThemeProvider`. Do not edit component styles in
+isolation — all changes must trace back to a token to preserve D1–D5.
 
-## Running the Application
+## Privacy
 
-### Development Server
+Dual-jurisdiction policy: ZZPL (Serbia) + GDPR (EU). See `/privacy` —
+the route renders `src/pages/Privacy.jsx` with 11 sections covering:
 
-To run the development server:
+1. Controller identity
+2. Legal bases
+3. Data collected (only what Matomo sees: pseudonymous visitor ID + a
+   coarse IP after 2-byte anonymization)
+4. Cookies (session + `_pk_*` analytics cookies when Accepted)
+5. Third parties (none for analytics; CloudFront for CDN;
+   `api.cloud-lord.com` for contact form)
+6. Retention (365 d raw logs; 180 d for backups; indefinite for
+   aggregated reports)
+7. Data-subject rights (Art. 15/17/20 GDPR + Art. 26/30 ZZPL)
+8. How to exercise rights (email `privacy@cloud-lord.com`)
+9. Complaint routing (Poverenik SR + relevant EU DPA)
+10. Breach notification commitments (72 hr to Poverenik)
+11. Changes to the policy
 
-```bash
-npm run dev
-```
+The **ConsentBanner** component mounts at the bottom of every page and
+persists the user's Accept / Reject choice in `localStorage`. Until
+Accept is chosen, Matomo fires nothing.
 
-The application will start on **http://localhost:5173**
+## Tracking
 
-**Note**: This project uses Vite, not Create React App. The command is `npm run dev` (NOT `npm start`).
+`src/providers/TrackingProvider.jsx` wraps `<App>` and uses Matomo's
+`requireConsent` mode — `_paq.push(['requireConsent'])` is called at
+bootstrap so nothing tracks until the user clicks Accept.
 
-### Production Build
+`src/lib/tracking.js` exports two wrappers:
 
-To create a production build:
+- `track(action, category, name, value)` — thin `_paq.push(['trackEvent', ...])`.
+- `trackGoal(goalId, value)` — `_paq.push(['trackGoal', goalId, value])`.
 
-```bash
-npm run build
-```
+CTA elements carry `data-track` attributes (D1–D5 — the five conversion
+events: hero CTA click, pricing card click, case-study open, contact
+submit, blog engagement). The TrackingProvider reads these off the DOM
+and routes them through `track()` with a consistent category.
 
-Build output will be in the `dist/` directory.
+Until the Matomo first-run wizard assigns real goal IDs (C35), `trackGoal`
+calls buffer safely — no-op until `_paq` is live.
 
-### Preview Production Build
+## Contact form
 
-To preview the production build locally:
+The form posts to Blazar (`https://api.cloud-lord.com`). Submission
+logic lives in `src/lib/contactSubmit.js`:
 
-```bash
-npm run preview
-```
+1. `GET /nonce` — fetch a fresh HMAC-signed nonce (5-min TTL).
+2. `POST /contact` with `{name, email, subject, message, nonce,
+   honeypot: ""}`.
+3. Blazar replies `204` on both accept and silent-reject; frontend shows
+   a generic success state either way.
 
-### Linting
+Honeypot field: a hidden `<input name="website">` — browsers that
+aren't autofill-bots leave it empty; bots fill every field and
+silent-reject. The form also shows a loading state while the request is
+in flight so double-clicks don't re-submit.
 
-To run ESLint:
+## Env vars
 
-```bash
-npm run lint
-```
+Only one env var matters on the frontend:
 
-## Project Structure
+| Var             | Default                           | Purpose                                    |
+|-----------------|-----------------------------------|--------------------------------------------|
+| `VITE_API_BASE` | `https://api.cloud-lord.com`      | Base URL for Blazar contact-form requests |
 
-```
-cloud-lord/
-├── src/
-│   ├── components/          # Reusable React components
-│   ├── pages/               # Page components (About, Services, Contact)
-│   ├── assets/              # Images and logos
-│   ├── App.jsx              # Main application component
-│   └── main.jsx             # Application entry point
-├── public/                  # Static assets
-├── dist/                    # Build output (generated)
-├── package.json             # Dependencies and scripts
-├── vite.config.js           # Vite configuration
-└── index.html               # HTML entry point
-```
-
-## Available Scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server on port 5173 |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run lint` | Run ESLint |
-
-## Quick Reference
-
-**Starting the app**: `npm run dev`
-**Access URL**: http://localhost:5173
-**Build command**: `npm run build`
+Override for local dev by copying `.env.example` → `.env.local` and
+setting `VITE_API_BASE=http://localhost:3030`.
 
 ## Local dev
 
-The contact form talks to the Blazar API (nonce + submit). By default it
-points at the production endpoint `https://api.cloud-lord.com`. To point
-at a Blazar instance running locally, copy `.env.example` to `.env.local`
-and override the base URL:
-
 ```bash
-cp .env.example .env.local
-# then edit .env.local:
-# VITE_API_BASE=http://localhost:3030
+npm install
+npm run dev        # vite dev server on http://localhost:5173
+npm run build      # production build -> dist/
+npm run preview    # serve the built dist/ locally
+npm run lint       # eslint
 ```
 
-Vite picks up `.env.local` automatically on `npm run dev`.
+Note: Vite is the build tool — `npm run dev` (not `npm start`).
 
-Matomo tracking is consent-gated: the `<ConsentBanner>` must be accepted
-before any `_paq` commands are flushed. Until Matomo's script is injected
-(C35 wizard), `track()` / `trackGoal()` calls are queued safely in-memory.
+## Deploy
 
----
+Deployed to **Azure CloudFront** via the existing GitHub Actions
+workflow in `.github/workflows/cloudlord_master_oidc.yml`:
 
-Built with React + Vite
+- Push to `master` triggers the workflow.
+- Workflow OIDC-assumes the Azure role, runs `npm run build`, uploads
+  `dist/` to the CDN origin bucket, then invalidates the CloudFront
+  distribution.
+
+No custom server infrastructure for the SPA itself. The only
+server-side piece is `api.cloud-lord.com` (Blazar) on Hetzner, which
+this site talks to for the contact form.
+
+## Repo layout
+
+```
+cloud-lord/
+├── README.md                 (this file)
+├── index.html                (Vite entry)
+├── package.json
+├── vite.config.js
+├── robots.txt
+├── public/
+├── src/
+│   ├── main.jsx
+│   ├── App.jsx
+│   ├── theme.js              (oklch design tokens)
+│   ├── components/
+│   ├── pages/                (Home, About, Services, Contact, Privacy)
+│   ├── providers/
+│   │   └── TrackingProvider.jsx
+│   └── lib/
+│       ├── contactSubmit.js  (GET /nonce -> POST /contact)
+│       └── tracking.js       (track + trackGoal wrappers)
+├── design-package/
+│   ├── new-design/HANDOFF.md (D1..D5 stability contracts)
+│   ├── screenshots/
+│   └── current-design.md
+└── .github/workflows/cloudlord_master_oidc.yml
+```
+
+## Status
+
+C22 ported the design; C42 wired the contact form; C45 wired the
+tracking event handlers (goal IDs pending Matomo wizard C35). Deploy
+via the existing CloudFront workflow.
+
+Last updated: 2026-04-24
