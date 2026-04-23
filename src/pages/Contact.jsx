@@ -1,128 +1,304 @@
-import { Typography, Box, Paper, Grid } from '@mui/material';
-import EmailIcon from '@mui/icons-material/Email';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { useState } from 'react';
+import { Box, Container } from '@mui/material';
+import { tokens } from '../theme';
+import submitInquiry from '../lib/contactSubmit';
+
+const INTERESTS = [
+  'Platform level-up / upgrade',
+  'Automation (CI/CD, IaC)',
+  'Cloud migration',
+  'DevOps / cloud architecture',
+  'Kubernetes platforms',
+  'Data pipelines & messaging (Kafka / RabbitMQ)',
+  'AI systems & integration',
+  'Company-wide AI adoption & standards',
+  'SIEM / security tooling',
+  'Other / not sure yet',
+];
+
+const labelSx = {
+  fontFamily: tokens.mono,
+  fontSize: 11,
+  color: tokens.fg3,
+  letterSpacing: '0.06em',
+  textTransform: 'uppercase',
+  mb: '14px',
+  display: 'block',
+};
+
+const inputSx = {
+  width: '100%',
+  background: tokens.bg,
+  border: `1px solid ${tokens.line}`,
+  borderRadius: '6px',
+  padding: '12px 14px',
+  color: tokens.fg,
+  fontFamily: tokens.body,
+  fontSize: 14,
+  outline: 'none',
+  transition: 'border-color 140ms ease',
+  '&:focus': { borderColor: tokens.accent },
+};
 
 const Contact = () => {
-  const contactMethods = [
-    {
-      icon: <EmailIcon sx={{ fontSize: 40 }} />,
-      title: 'Email',
-      value: 'tomzi.iv@gmail.com',
-      link: 'mailto:tomzi.iv@gmail.com'
-    },
-    {
-      icon: <LinkedInIcon sx={{ fontSize: 40 }} />,
-      title: 'LinkedIn',
-      value: 'Tomislav Ivanovic',
-      link: 'https://www.linkedin.com/in/tomislav-ivanovic-124b13115'
-    },
-    {
-      icon: <GitHubIcon sx={{ fontSize: 40 }} />,
-      title: 'GitHub',
-      value: '@Shaddar91',
-      link: 'https://github.com/Shaddar91'
-    },
-    {
-      icon: <LocationOnIcon sx={{ fontSize: 40 }} />,
-      title: 'Location',
-      value: 'Available for Remote Work',
-      link: null
-    }
-  ];
+  const [interests, setInterests] = useState([]);
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [hp, setHp] = useState(''); // honeypot
+
+  const toggleInterest = (value) => {
+    setInterests((prev) =>
+      prev.includes(value) ? prev.filter((i) => i !== value) : [...prev, value]
+    );
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (hp) return; // honeypot — silent drop
+    await submitInquiry({ interests, email, message });
+  };
 
   return (
-    <Box sx={{
-      padding: { xs: '1.5rem', md: '3rem' },
-      maxWidth: '1400px',
-      margin: '0 auto',
-    }}>
-      {/* Contact Header */}
-      <Box sx={{
-        textAlign: 'center',
-        marginBottom: '3rem',
-        padding: '2rem',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        borderRadius: '12px',
-      }}>
-        <Typography variant="h3" gutterBottom sx={{ fontWeight: 700, color: 'white' }}>
-          Get In Touch
-        </Typography>
-        <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.9)', maxWidth: '800px', margin: '0 auto' }}>
-          Ready to elevate your infrastructure? Let&apos;s discuss how we can help achieve your goals.
-        </Typography>
-      </Box>
+    <Box
+      component="section"
+      id="contact"
+      sx={{ py: { xs: '56px', md: '96px' } }}
+    >
+      <Container maxWidth={false} sx={{ maxWidth: '1200px !important', px: { xs: 2, md: 4 } }}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: '1.3fr 1fr' },
+            gap: { xs: '40px', md: '64px' },
+            alignItems: 'center',
+          }}
+        >
+          <Box>
+            <Box
+              component="h2"
+              sx={{
+                fontFamily: tokens.display,
+                fontSize: 'clamp(32px, 4vw, 52px)',
+                fontWeight: 600,
+                lineHeight: 1.05,
+                letterSpacing: '-0.025em',
+                m: 0,
+                mb: '20px',
+                maxWidth: '14ch',
+                color: tokens.fg,
+              }}
+            >
+              Need someone who can turn your cloud into{' '}
+              <Box component="span" sx={{ color: tokens.accent, fontStyle: 'italic', fontWeight: 500 }}>
+                a platform?
+              </Box>
+            </Box>
+            <Box component="p" sx={{ fontSize: 16, color: tokens.fg2, m: 0, mb: '28px', maxWidth: '48ch' }}>
+              Tick what you&rsquo;re thinking about, add a few lines, and send it over. Inquiries go to{' '}
+              <Box component="strong" sx={{ color: tokens.fg, fontWeight: 500 }}>
+                engineering@cloud-lord.com
+              </Box>
+              . I reply within one business day.
+            </Box>
 
-      {/* Main Contact Section */}
-      <Box sx={{
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        padding: '3rem 2rem',
-        borderRadius: '12px',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        marginBottom: '3rem'
-      }}>
-        <Typography variant="h5" gutterBottom sx={{ color: '#646cff', fontWeight: 600, marginBottom: '2rem', textAlign: 'center' }}>
-          Contact Information
-        </Typography>
-
-        <Grid container spacing={3}>
-          {contactMethods.map((method, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <Paper
-                elevation={2}
-                sx={{
-                  padding: '2rem 1.5rem',
-                  textAlign: 'center',
-                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '12px',
-                  height: '100%',
-                  transition: 'all 0.3s ease',
-                  cursor: method.link ? 'pointer' : 'default',
-                  '&:hover': method.link ? {
-                    transform: 'translateY(-5px)',
-                    boxShadow: '0 8px 25px rgba(100, 108, 255, 0.2)',
-                    border: '1px solid rgba(100, 108, 255, 0.5)',
-                  } : {}
-                }}
-                onClick={() => method.link && window.open(method.link, '_blank')}
-              >
-                <Box sx={{ color: '#646cff', marginBottom: '1rem' }}>
-                  {method.icon}
+            <Box
+              sx={{
+                background: tokens.bg2,
+                border: `1px solid ${tokens.line}`,
+                borderRadius: '10px',
+                p: '28px',
+                fontFamily: tokens.mono,
+                fontSize: 13,
+              }}
+            >
+              {[
+                ['inquiries', <Box component="a" href="mailto:engineering@cloud-lord.com" data-track="mailto-click" sx={{ color: tokens.fg, '&:hover': { color: tokens.accent } }} key="e">engineering@cloud-lord.com</Box>],
+                ['personal', <Box component="a" href="mailto:tomislav@cloud-lord.com" data-track="mailto-click" sx={{ color: tokens.fg, '&:hover': { color: tokens.accent } }} key="p">tomislav@cloud-lord.com</Box>],
+                ['linkedin', <Box component="a" href="https://www.linkedin.com/in/tomislav-ivanovic-124b13115" target="_blank" rel="noopener noreferrer" data-track="linkedin-click" sx={{ color: tokens.fg, '&:hover': { color: tokens.accent } }} key="l">/in/tomislav-ivanovic</Box>],
+                ['github', <Box component="a" href="https://github.com/Shaddar91" target="_blank" rel="noopener noreferrer" data-track="github-click" sx={{ color: tokens.fg, '&:hover': { color: tokens.accent } }} key="g">@Shaddar91</Box>],
+                ['based in', <span key="b" style={{ color: tokens.fg }}>Belgrade, Serbia · CET</span>],
+                ['works with', <span key="w" style={{ color: tokens.fg }}>Anywhere, any timezone</span>],
+              ].map(([label, node], idx) => (
+                <Box
+                  key={label}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'baseline',
+                    py: '12px',
+                    borderTop: idx === 0 ? 'none' : `1px solid ${tokens.line}`,
+                    pt: idx === 0 ? 0 : '12px',
+                  }}
+                >
+                  <Box component="b" sx={{ color: tokens.fg3, fontWeight: 400 }}>{label}</Box>
+                  <Box component="span">{node}</Box>
                 </Box>
-                <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, marginBottom: '0.5rem' }}>
-                  {method.title}
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                  {method.value}
-                </Typography>
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+              ))}
+              <Box
+                sx={{
+                  mt: '20px',
+                  pt: '20px',
+                  borderTop: `1px solid ${tokens.line}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  fontFamily: tokens.mono,
+                  fontSize: 12,
+                  color: tokens.fg2,
+                }}
+              >
+                <Box sx={{ width: 8, height: 8, borderRadius: '50%', background: tokens.accent, boxShadow: `0 0 10px ${tokens.accent}` }} />
+                Available now &middot; taking one engagement
+              </Box>
+            </Box>
+          </Box>
 
-      {/* Additional Info */}
-      <Box sx={{
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        padding: '2.5rem',
-        borderRadius: '12px',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-      }}>
-        <Typography variant="h5" gutterBottom sx={{ color: '#646cff', fontWeight: 600, marginBottom: '1.5rem' }}>
-          Let&apos;s Build Something Great
-        </Typography>
-        <Typography variant="body1" paragraph sx={{ color: 'white', lineHeight: 1.8, fontSize: '1.05rem' }}>
-          Whether you need cloud infrastructure setup, DevOps automation, Kubernetes management, or AI engineering
-          solutions, I&apos;m here to help. With expertise spanning AWS, Terraform, Docker, Kubernetes, and modern AI/ML
-          technologies, I can deliver tailored solutions that meet your specific needs.
-        </Typography>
-        <Typography variant="body1" sx={{ color: 'white', lineHeight: 1.8, fontSize: '1.05rem' }}>
-          Available for both short-term projects and long-term partnerships. Let&apos;s discuss how we can work together
-          to achieve your infrastructure and automation goals.
-        </Typography>
-      </Box>
+          <Box
+            component="form"
+            onSubmit={onSubmit}
+            sx={{
+              background: tokens.bg2,
+              border: `1px solid ${tokens.line}`,
+              borderRadius: '10px',
+              p: { xs: '20px', md: '32px' },
+            }}
+          >
+            {/* Honeypot — visually hidden */}
+            <Box
+              component="input"
+              type="text"
+              name="company"
+              value={hp}
+              onChange={(e) => setHp(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              sx={{
+                position: 'absolute',
+                left: '-10000px',
+                width: '1px',
+                height: '1px',
+                overflow: 'hidden',
+              }}
+            />
+            <Box component="label" sx={labelSx}>// What are you thinking about?</Box>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                gap: '10px',
+                mb: '24px',
+              }}
+            >
+              {INTERESTS.map((value) => {
+                const checked = interests.includes(value);
+                return (
+                  <Box
+                    component="label"
+                    key={value}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      padding: '10px 12px',
+                      border: `1px solid ${checked ? tokens.accentDim : tokens.line}`,
+                      borderRadius: '6px',
+                      fontFamily: tokens.mono,
+                      fontSize: '12.5px',
+                      color: checked ? tokens.fg : tokens.fg2,
+                      cursor: 'pointer',
+                      userSelect: 'none',
+                      transition: 'border-color 140ms ease, color 140ms ease, background 140ms ease',
+                      background: checked ? `color-mix(in oklab, ${tokens.accent} 6%, transparent)` : 'transparent',
+                      '&:hover': { borderColor: tokens.line2, color: tokens.fg },
+                    }}
+                  >
+                    <Box
+                      component="input"
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleInterest(value)}
+                      sx={{
+                        appearance: 'none',
+                        WebkitAppearance: 'none',
+                        width: 14,
+                        height: 14,
+                        border: `1px solid ${tokens.line2}`,
+                        borderRadius: '3px',
+                        background: checked ? tokens.accent : tokens.bg,
+                        display: 'grid',
+                        placeItems: 'center',
+                        m: 0,
+                        cursor: 'pointer',
+                        flexShrink: 0,
+                        '&:checked': { borderColor: tokens.accent },
+                      }}
+                    />
+                    {value}
+                  </Box>
+                );
+              })}
+            </Box>
+
+            <Box component="label" sx={labelSx}>// Your email</Box>
+            <Box sx={{ mb: '16px' }}>
+              <Box
+                component="input"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@company.com"
+                required
+                sx={inputSx}
+              />
+            </Box>
+
+            <Box component="label" sx={labelSx}>// What&rsquo;s the situation?</Box>
+            <Box sx={{ mb: '16px' }}>
+              <Box
+                component="textarea"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="A few sentences about the stack, the team size, and what's broken or planned."
+                required
+                sx={{ ...inputSx, minHeight: 110, lineHeight: 1.55, resize: 'vertical' }}
+              />
+            </Box>
+
+            <Box
+              component="button"
+              type="submit"
+              data-track="contact-submit"
+              sx={{
+                width: '100%',
+                fontFamily: tokens.mono,
+                fontSize: 13,
+                padding: '13px 18px',
+                background: tokens.accent,
+                color: tokens.bg,
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                transition: 'background 140ms ease',
+                mt: '8px',
+                '&:hover': { background: tokens.fg },
+              }}
+            >
+              Send inquiry &rarr;
+            </Box>
+            <Box
+              sx={{
+                fontFamily: tokens.mono,
+                fontSize: 11,
+                color: tokens.fg3,
+                mt: '12px',
+                textAlign: 'center',
+              }}
+            >
+              Opens your mail client &middot; goes to engineering@cloud-lord.com
+            </Box>
+          </Box>
+        </Box>
+      </Container>
     </Box>
   );
 };

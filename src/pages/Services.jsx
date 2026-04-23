@@ -1,269 +1,245 @@
-import { Typography, Box, Grid } from '@mui/material';
-import CloudIcon from '@mui/icons-material/Cloud';
-import CodeIcon from '@mui/icons-material/Code';
-import PsychologyIcon from '@mui/icons-material/Psychology';
-import StorageIcon from '@mui/icons-material/Storage';
-import WebIcon from '@mui/icons-material/Web';
+import { Box, Container } from '@mui/material';
+import SectionHead from '../components/SectionHead';
+import { tokens } from '../theme';
 
-//Import components
-import ServiceCard from '../components/ServiceCard';
-import TechCard from '../components/TechCard';
+const svcCardSx = {
+  background: tokens.bg,
+  border: `1px solid ${tokens.line}`,
+  borderRadius: '10px',
+  p: '28px',
+  position: 'relative',
+  transition: 'border-color 160ms ease, transform 160ms ease',
+  '&:hover': { borderColor: tokens.accentDim },
+};
 
-//FontAwesome icons
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAws, faDocker } from '@fortawesome/free-brands-svg-icons';
+const svcNumSx = {
+  position: 'absolute',
+  top: '20px',
+  right: '24px',
+  fontFamily: tokens.mono,
+  fontSize: 11,
+  color: tokens.fg3,
+};
 
-//Iconify icons
-import { Icon } from '@iconify/react';
-import kubernetesIcon from '@iconify/icons-logos/kubernetes';
-import ansibleIcon from '@iconify/icons-logos/ansible';
-import redisIcon from '@iconify/icons-logos/redis';
-import postgresIcon from '@iconify/icons-logos/postgresql';
-import mysqlIcon from '@iconify/icons-logos/mysql';
-import helmIcon from '@iconify/icons-logos/helm';
+const svcTagSx = {
+  fontFamily: tokens.mono,
+  fontSize: 11,
+  color: tokens.accent,
+  letterSpacing: '0.04em',
+  mb: '14px',
+};
 
-//Local assets
-import terraformLogo from '../assets/terraform.png';
-import cicdLogo from '../assets/cicd.png';
-import pythonLogo from '../assets/python.png';
-import hetznerLogo from '../assets/hetzner.svg';
-import ipfsLogo from '../assets/ipfs.png';
-import nextjsLogo from '../assets/nextjs.png';
-import nodeJsLogo from '../assets/nodejs.png';
-import vaultLogo from '../assets/vault.png';
-import vercelLogo from '../assets/vercel.png';
+const svcHeadingSx = {
+  fontFamily: tokens.display,
+  fontSize: 22,
+  fontWeight: 600,
+  m: 0,
+  mb: '10px',
+  letterSpacing: '-0.015em',
+  lineHeight: 1.15,
+  color: tokens.fg,
+};
 
-const Services = () => {
-  const services = [
-    {
-      title: 'Cloud Infrastructure & DevOps',
-      icon: <CloudIcon sx={{ fontSize: 48 }} />,
-      description: 'Design, build, and manage robust cloud infrastructure with industry-leading DevOps practices. Expertise in AWS and Hetzner Cloud for scalable, secure, and cost-effective solutions.',
-      features: [
-        'AWS architecture design and implementation',
-        'Multi-cloud infrastructure management',
-        'Infrastructure as Code (Terraform, Pulumi)',
-        'Kubernetes cluster setup and management',
-        'CI/CD pipeline automation',
-        'High-availability and disaster recovery'
-      ]
+const svcParaSx = {
+  color: tokens.fg2,
+  fontSize: '14.5px',
+  m: 0,
+  mb: '20px',
+  lineHeight: 1.6,
+};
+
+const svcUlSx = {
+  listStyle: 'none',
+  p: 0,
+  m: 0,
+  fontFamily: tokens.mono,
+  fontSize: '12.5px',
+  color: tokens.fg2,
+  display: 'grid',
+  gap: '6px',
+  '& li': {
+    display: 'flex',
+    gap: '10px',
+    alignItems: 'baseline',
+    '&::before': {
+      content: '"▸"',
+      color: tokens.accent,
+      fontSize: 10,
     },
-    {
-      title: 'AI & Machine Learning Engineering',
-      icon: <PsychologyIcon sx={{ fontSize: 48 }} />,
-      description: 'Modern AI/ML solutions and intelligent automation systems. From LLM integration to custom AI agents and automated workflows.',
-      features: [
-        'LLM integration (Claude, GPT, open-source models)',
-        'AI agent development and orchestration',
-        'ML model deployment and serving',
-        'AI-powered workflow automation',
-        'Custom AI solution architecture'
-      ]
-    },
-    {
-      title: 'Website & Business Solutions',
-      icon: <WebIcon sx={{ fontSize: 48 }} />,
-      description: 'Full-stack web development solutions tailored to your business needs. From simple landing pages to complex web applications with authentication, CMS, and database integration.',
-      features: [
-        'Custom website design and development',
-        'User authentication and login systems',
-        'Content Management Systems (CMS)',
-        'E-commerce and business platforms',
-        'Responsive design for all devices',
-        'Ongoing support and maintenance'
-      ]
-    },
-    {
-      title: 'Container Orchestration',
-      icon: <CodeIcon sx={{ fontSize: 48 }} />,
-      description: 'Expert Kubernetes management for streamlined container deployment, scaling, and operations. Implement modern microservices architectures with confidence.',
-      features: [
-        'Kubernetes cluster design and deployment',
-        'Helm chart development and management',
-        'Service mesh implementation',
-        'Container security and compliance',
-        'Auto-scaling and resource optimization',
-        'Monitoring and observability setup'
-      ]
-    },
-    {
-      title: 'Database & Data Engineering',
-      icon: <StorageIcon sx={{ fontSize: 48 }} />,
-      description: 'Reliable database solutions and data infrastructure. From traditional RDBMS to modern distributed systems and caching layers.',
-      features: [
-        'PostgreSQL and MySQL optimization',
-        'Redis caching strategies',
-        'Database migration and replication',
-        'Backup and recovery solutions',
-        'Performance tuning and monitoring',
-        'Data security and encryption'
-      ]
-    }
-  ];
+  },
+};
 
-  return (
-    <Box sx={{
-      padding: { xs: '1.5rem', md: '3rem' },
-      maxWidth: '1400px',
-      margin: '0 auto',
-    }}>
-      {/* Services Header */}
-      <Box sx={{
-        textAlign: 'center',
-        marginBottom: '3rem',
-        padding: '2rem',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        borderRadius: '12px',
-      }}>
-        <Typography variant="h3" gutterBottom sx={{ fontWeight: 700, color: 'white' }}>
-          Our Services
-        </Typography>
-        <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.9)', maxWidth: '800px', margin: '0 auto' }}>
-          Comprehensive cloud infrastructure, DevOps, web development, and AI engineering solutions tailored to your business needs
-        </Typography>
-      </Box>
+const Services = () => (
+  <Box
+    component="section"
+    id="services"
+    sx={{
+      py: { xs: '56px', md: '96px' },
+      borderBottom: `1px solid ${tokens.line}`,
+      background: tokens.bg2,
+    }}
+  >
+    <Container maxWidth={false} sx={{ maxWidth: '1200px !important', px: { xs: 2, md: 4 } }}>
+      <SectionHead
+        tagNumber="02"
+        tagLabel="services"
+        title="What I do, and what I lead with."
+        subtitle="AWS platform engineering is the core. Migrations, automation, and AI enablement build on top of it."
+      />
 
-      {/* Service Cards */}
-      <Grid container spacing={3} sx={{ marginBottom: '4rem' }}>
-        {services.map((service, index) => (
-          <Grid item xs={12} md={6} key={index}>
-            <ServiceCard
-              title={service.title}
-              icon={service.icon}
-              description={service.description}
-              features={service.features}
-            />
-          </Grid>
-        ))}
-      </Grid>
+      {/* hero row: 2fr wide card + 1fr aside */}
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' },
+          gap: '20px',
+        }}
+      >
+        <Box
+          sx={{
+            ...svcCardSx,
+            background: `linear-gradient(180deg, color-mix(in oklab, ${tokens.accent} 4%, ${tokens.bg}) 0%, ${tokens.bg} 70%)`,
+            borderColor: tokens.accentDim,
+            p: '36px',
+          }}
+        >
+          <Box sx={svcNumSx}>01 / primary</Box>
+          <Box sx={svcTagSx}>&#9632; aws platform engineering</Box>
+          <Box component="h3" sx={{ ...svcHeadingSx, fontSize: 30 }}>
+            Formalize your AWS into a real platform: networking, accounts, IaC, CI/CD.
+          </Box>
+          <Box component="p" sx={{ ...svcParaSx, fontSize: 16 }}>
+            The work most teams hire me for. I take an AWS environment that grew organically and turn it into a versioned, reviewable platform: account structure, VPC and networking, Terraform or Pulumi modules, pipelines, and observability sized for your team.
+          </Box>
+          <Box component="ul" sx={svcUlSx}>
+            <li>Multi-account AWS architecture, landing zones</li>
+            <li>Terraform, modular and reviewable</li>
+            <li>CI pipelines: GitHub Actions, Jenkins, CircleCI, Bitbucket</li>
+            <li>Observability: Prometheus, Grafana, ELK stack</li>
+            <li>Secrets and access: SSM / Vault, IAM baselines</li>
+          </Box>
+        </Box>
 
-      {/* Technology Stack */}
-      <Box sx={{
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        padding: '3rem 2rem',
-        borderRadius: '12px',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-      }}>
-        <Typography variant="h4" gutterBottom sx={{ textAlign: 'center', color: 'white', marginBottom: '2rem', fontWeight: 600 }}>
-          Technology Stack
-        </Typography>
-        <Typography variant="body1" sx={{ textAlign: 'center', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '3rem', maxWidth: '800px', margin: '0 auto 3rem' }}>
-          We leverage industry-leading technologies and tools to deliver robust, scalable solutions
-        </Typography>
-
-        <Box sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'flex-start',
-          flexWrap: 'wrap',
-          gap: '1.5rem',
-        }}>
-          <TechCard
-            icon={terraformLogo}
-            title="Terraform"
-            description="Infrastructure as Code"
-            iconType="image"
-          />
-          <TechCard
-            icon={<FontAwesomeIcon icon={faAws} size="4x" />}
-            title="AWS"
-            description="Cloud Platform"
-            iconType="fontawesome"
-          />
-          <TechCard
-            icon={<FontAwesomeIcon icon={faDocker} size="4x" />}
-            title="Docker"
-            description="Containerization"
-            iconType="fontawesome"
-          />
-          <TechCard
-            icon={<Icon icon={kubernetesIcon} width="64" height="64" />}
-            title="Kubernetes"
-            description="Container Orchestration"
-            iconType="iconify"
-          />
-          <TechCard
-            icon={<Icon icon={ansibleIcon} width="64" height="64" />}
-            title="Ansible"
-            description="Configuration Management"
-            iconType="iconify"
-          />
-          <TechCard
-            icon={<Icon icon={helmIcon} width="64" height="64" />}
-            title="Helm"
-            description="K8s Package Manager"
-            iconType="iconify"
-          />
-          <TechCard
-            icon={<Icon icon={postgresIcon} width="64" height="64" />}
-            title="PostgreSQL"
-            description="Relational Database"
-            iconType="iconify"
-          />
-          <TechCard
-            icon={<Icon icon={mysqlIcon} width="64" height="64" />}
-            title="MySQL"
-            description="Relational Database"
-            iconType="iconify"
-          />
-          <TechCard
-            icon={<Icon icon={redisIcon} width="64" height="64" />}
-            title="Redis"
-            description="In-Memory Data Store"
-            iconType="iconify"
-          />
-          <TechCard
-            icon={pythonLogo}
-            title="Python"
-            description="Backend & AI/ML"
-            iconType="image"
-          />
-          <TechCard
-            icon={nodeJsLogo}
-            title="Node.js"
-            description="JavaScript Runtime"
-            iconType="image"
-          />
-          <TechCard
-            icon={nextjsLogo}
-            title="Next.js"
-            description="React Framework"
-            iconType="image"
-          />
-          <TechCard
-            icon={cicdLogo}
-            title="CI/CD"
-            description="Automation Pipelines"
-            iconType="image"
-          />
-          <TechCard
-            icon={vaultLogo}
-            title="Vault"
-            description="Secrets Management"
-            iconType="image"
-          />
-          <TechCard
-            icon={hetznerLogo}
-            title="Hetzner"
-            description="Cloud Provider"
-            iconType="image"
-          />
-          <TechCard
-            icon={vercelLogo}
-            title="Vercel"
-            description="Deployment Platform"
-            iconType="image"
-          />
-          <TechCard
-            icon={ipfsLogo}
-            title="IPFS"
-            description="Distributed Storage"
-            iconType="image"
-          />
+        <Box
+          sx={{
+            background: tokens.bg,
+            border: `1px solid ${tokens.line}`,
+            borderRadius: '10px',
+            p: '28px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <Box
+            sx={{
+              fontFamily: tokens.mono,
+              fontSize: 11,
+              color: tokens.fg3,
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+              mb: '18px',
+            }}
+          >
+            // Core stack
+          </Box>
+          <Box
+            component="h4"
+            sx={{
+              fontFamily: tokens.display,
+              fontSize: 20,
+              fontWeight: 600,
+              m: 0,
+              mb: '8px',
+              letterSpacing: '-0.01em',
+              color: tokens.fg,
+            }}
+          >
+            What I actually use day-to-day.
+          </Box>
+          <Box component="p" sx={{ fontSize: 14, color: tokens.fg2, m: 0, mb: '20px' }}>
+            Short list on purpose. I go deep on these, not wide on every logo.
+          </Box>
+          <Box sx={{ display: 'grid', gap: '10px', mt: 'auto' }}>
+            {[
+              ['Cloud', 'AWS · Hetzner'],
+              ['IaC', 'Terraform · Ansible'],
+              ['Orchestration', 'Kubernetes · Helm'],
+              ['Observability', 'Prometheus · Grafana · ELK'],
+              ['Messaging', 'Kafka · RabbitMQ'],
+              ['AI', 'Claude · OpenAI · Whisper · ChromaDB · MCP'],
+            ].map(([label, value], idx) => (
+              <Box
+                key={label}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
+                  py: '10px',
+                  borderTop: idx === 0 ? 'none' : `1px solid ${tokens.line}`,
+                  fontFamily: tokens.mono,
+                  fontSize: 12,
+                  pt: idx === 0 ? 0 : '10px',
+                }}
+              >
+                <Box component="b" sx={{ color: tokens.fg, fontWeight: 500 }}>{label}</Box>
+                <Box component="span" sx={{ color: tokens.fg3 }}>{value}</Box>
+              </Box>
+            ))}
+          </Box>
         </Box>
       </Box>
-    </Box>
-  );
-};
+
+      {/* lower row: 3 smaller cards */}
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+          gap: '20px',
+          mt: '20px',
+        }}
+      >
+        <Box sx={svcCardSx}>
+          <Box sx={svcNumSx}>02</Box>
+          <Box sx={svcTagSx}>&#9632; automation &amp; devops</Box>
+          <Box component="h3" sx={svcHeadingSx}>CI/CD and IaC that your team can read, review, and own.</Box>
+          <Box component="p" sx={svcParaSx}>Pipelines, release flows, deployment strategies, and IaC modules designed to be reviewable, not a black box only I can touch.</Box>
+          <Box component="ul" sx={svcUlSx}>
+            <li>GitHub Actions &middot; Jenkins &middot; CircleCI &middot; Bitbucket</li>
+            <li>Terraform modules, reusable across teams</li>
+            <li>Ansible for configuration and golden images</li>
+          </Box>
+        </Box>
+
+        <Box sx={svcCardSx}>
+          <Box sx={svcNumSx}>03</Box>
+          <Box sx={svcTagSx}>&#9632; cloud migration</Box>
+          <Box component="h3" sx={svcHeadingSx}>Move to AWS without rewriting your company mid-flight.</Box>
+          <Box component="p" sx={svcParaSx}>Phased migrations off legacy providers or on-prem, with a paved path: accounts, networking, data, CI, in a sequence that keeps you shipping.</Box>
+          <Box component="ul" sx={svcUlSx}>
+            <li>Discovery &amp; sequencing plan</li>
+            <li>Data migration &middot; Postgres &middot; MySQL</li>
+            <li>Messaging &amp; streaming (Kafka &middot; RabbitMQ)</li>
+          </Box>
+        </Box>
+
+        <Box sx={svcCardSx}>
+          <Box sx={svcNumSx}>04</Box>
+          <Box sx={svcTagSx}>&#9632; ai enablement</Box>
+          <Box component="h3" sx={svcHeadingSx}>Secure LLM enablement and company-wide AI adoption standards.</Box>
+          <Box component="p" sx={svcParaSx}>I&rsquo;m not an ML engineer. I set up the models, tooling, and processes the right way: securely, with guardrails, and with standards your whole company can actually follow. I track the AI space closely and usually sit 6 to 8 months ahead of what lands in the mainstream, so what you adopt today still holds up next quarter.</Box>
+          <Box component="p" sx={svcParaSx}>I also run my own custom agentic framework (a paradigm beyond LangChain / LangGraph) when a project needs deeper control than off-the-shelf tooling gives. That includes MCP servers, both existing and custom-built, to wire models into your real systems.</Box>
+          <Box component="ul" sx={svcUlSx}>
+            <li>Models: Claude, OpenAI, Whisper</li>
+            <li>Vector and retrieval: ChromaDB, Ory / Lumen stack</li>
+            <li>LangChain, LangGraph, or custom agent framework</li>
+            <li>MCP servers, existing or custom</li>
+            <li>Company-wide usage standards and guardrails</li>
+            <li>Secure integration into engineering workflow</li>
+          </Box>
+        </Box>
+      </Box>
+    </Container>
+  </Box>
+);
 
 export default Services;

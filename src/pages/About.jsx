@@ -1,136 +1,112 @@
-import { Typography, Box, Grid, Paper } from '@mui/material';
-import CloudIcon from '@mui/icons-material/Cloud';
-import SecurityIcon from '@mui/icons-material/Security';
-import SpeedIcon from '@mui/icons-material/Speed';
-import PsychologyIcon from '@mui/icons-material/Psychology';
+import { Box, Container } from '@mui/material';
+import SectionHead from '../components/SectionHead';
+import { tokens } from '../theme';
 
-const About = () => {
-  const highlights = [
-    {
-      icon: <CloudIcon sx={{ fontSize: 40 }} />,
-      title: 'Cloud Native',
-      description: 'Expert in AWS, Hetzner Cloud, and modern cloud architectures'
-    },
-    {
-      icon: <SecurityIcon sx={{ fontSize: 40 }} />,
-      title: 'Security First',
-      description: 'Infrastructure solutions with security and compliance at the core'
-    },
-    {
-      icon: <SpeedIcon sx={{ fontSize: 40 }} />,
-      title: 'DevOps Excellence',
-      description: 'Automated CI/CD pipelines for fast, reliable deployments'
-    },
-    {
-      icon: <PsychologyIcon sx={{ fontSize: 40 }} />,
-      title: 'AI Engineering',
-      description: 'Modern AI/ML solutions and intelligent automation systems'
-    }
-  ];
+const About = () => (
+  <Box
+    component="section"
+    id="about"
+    sx={{
+      py: { xs: '56px', md: '96px' },
+      borderBottom: `1px solid ${tokens.line}`,
+    }}
+  >
+    <Container maxWidth={false} sx={{ maxWidth: '1200px !important', px: { xs: 2, md: 4 } }}>
+      <SectionHead
+        tagNumber="01"
+        tagLabel="about"
+        title="A platform engineer for the AWS work you haven't formalized yet."
+        subtitle="Teams bring me in when their AWS has grown organically, when a migration or upgrade is overdue, or when leadership wants a real plan for how the company actually uses AI."
+      />
 
-  return (
-    <Box sx={{
-      padding: { xs: '1.5rem', md: '3rem' },
-      maxWidth: '1400px',
-      margin: '0 auto',
-    }}>
-      {/* Hero Section */}
-      <Box sx={{
-        textAlign: 'center',
-        marginBottom: '3rem',
-        padding: '2rem',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        borderRadius: '12px',
-      }}>
-        <Typography
-          variant="h3"
-          gutterBottom
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', md: '1.2fr 1fr' },
+          gap: { xs: '40px', md: '64px' },
+        }}
+      >
+        <Box>
+          <Box component="p" sx={{ fontSize: 16, lineHeight: 1.7, color: tokens.fg2, m: 0, mb: '20px' }}>
+            <Box component="strong" sx={{ color: tokens.fg, fontWeight: 500 }}>
+              I work Infrastructure-as-Code, end to end.
+            </Box>{' '}
+            Every environment I touch leaves in Terraform or Pulumi with a CI pipeline and a handoff doc. Nothing clicked in a console, nothing secret to my head.
+          </Box>
+          <Box component="p" sx={{ fontSize: 16, lineHeight: 1.7, color: tokens.fg2, m: 0, mb: '20px' }}>
+            My standard engagement is formalizing an AWS environment into a real platform: networking, accounts, IaC, CI/CD, observability, so your team stops firefighting and starts shipping. From there it extends into cloud migrations, AI adoption, or platform upgrades, depending on where you are.
+          </Box>
+          <Box component="p" sx={{ fontSize: 16, lineHeight: 1.7, color: tokens.fg2, m: 0 }}>
+            I spent eight years inside platform teams before going independent. That&rsquo;s the lens I bring: infra that the people around it can actually read, own, and extend.
+          </Box>
+        </Box>
+
+        <Box
           sx={{
-            fontWeight: 700,
-            color: 'white',
-            marginBottom: '1rem'
+            display: 'grid',
+            gridTemplateColumns: '1fr',
+            gap: '1px',
+            background: tokens.line,
+            border: `1px solid ${tokens.line}`,
+            borderRadius: '8px',
+            overflow: 'hidden',
+            alignSelf: 'start',
           }}
         >
-          Cloud Lord
-        </Typography>
-        <Typography
-          variant="h6"
-          sx={{
-            color: 'rgba(255, 255, 255, 0.9)',
-            maxWidth: '800px',
-            margin: '0 auto',
-            lineHeight: 1.7,
-            fontWeight: 300
-          }}
-        >
-          Expert IT Consultancy Specializing in Cloud Infrastructure, DevOps, and AI Engineering
-        </Typography>
-      </Box>
-
-      {/* Main Description */}
-      <Box sx={{
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        padding: '2.5rem',
-        borderRadius: '12px',
-        marginBottom: '2rem',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-      }}>
-        <Typography variant="h5" gutterBottom sx={{ color: '#646cff', fontWeight: 600, marginBottom: '1.5rem' }}>
-          Who Are We
-        </Typography>
-        <Typography variant="body1" paragraph sx={{ color: 'white', lineHeight: 1.8, fontSize: '1.05rem' }}>
-          Cloud Lord is a specialized IT consultancy agency focused on creating robust, secure, and scalable
-          infrastructure solutions following Infrastructure as Code (IaC) best practices. We combine deep expertise
-          in cloud technologies, DevOps practices, and modern AI engineering to deliver solutions that drive
-          business value.
-        </Typography>
-        <Typography variant="body1" paragraph sx={{ color: 'white', lineHeight: 1.8, fontSize: '1.05rem' }}>
-          Our approach emphasizes automation, security, and operational excellence. We help organizations
-          modernize their infrastructure, implement efficient development pipelines, and leverage AI/ML
-          technologies to stay competitive in today&apos;s rapidly evolving technology landscape.
-        </Typography>
-        <Typography variant="body1" sx={{ color: 'white', lineHeight: 1.8, fontSize: '1.05rem' }}>
-          From startup scale-ups to enterprise migrations, we tailor cloud-based solutions that align with
-          your business objectives, ensuring your infrastructure is fast, reliable, secure, and future-ready.
-        </Typography>
-      </Box>
-
-      {/* Highlights Grid */}
-      <Grid container spacing={3}>
-        {highlights.map((highlight, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
-            <Paper
-              elevation={2}
+          <Box sx={{ background: tokens.bg, p: '24px' }}>
+            <Box
               sx={{
-                padding: '2rem 1.5rem',
-                textAlign: 'center',
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '12px',
-                height: '100%',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  transform: 'translateY(-5px)',
-                  boxShadow: '0 8px 25px rgba(100, 108, 255, 0.2)',
-                  border: '1px solid rgba(100, 108, 255, 0.5)',
-                }
+                fontFamily: tokens.display,
+                fontSize: 36,
+                fontWeight: 600,
+                letterSpacing: '-0.02em',
+                color: tokens.fg,
               }}
             >
-              <Box sx={{ color: '#646cff', marginBottom: '1rem' }}>
-                {highlight.icon}
-              </Box>
-              <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, marginBottom: '0.75rem' }}>
-                {highlight.title}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.6 }}>
-                {highlight.description}
-              </Typography>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
-  );
-};
+              8<Box component="span" sx={{ color: tokens.accent, fontSize: 24, ml: '2px' }}>yr</Box>
+            </Box>
+            <Box
+              sx={{
+                fontFamily: tokens.mono,
+                fontSize: 11,
+                color: tokens.fg3,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                mt: '6px',
+              }}
+            >
+              in production infra
+            </Box>
+          </Box>
+          <Box sx={{ background: tokens.bg, p: '24px' }}>
+            <Box
+              sx={{
+                fontFamily: tokens.display,
+                fontSize: 36,
+                fontWeight: 600,
+                letterSpacing: '-0.02em',
+                color: tokens.fg,
+              }}
+            >
+              0
+            </Box>
+            <Box
+              sx={{
+                fontFamily: tokens.mono,
+                fontSize: 11,
+                color: tokens.fg3,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                mt: '6px',
+              }}
+            >
+              click-ops environments
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    </Container>
+  </Box>
+);
 
 export default About;

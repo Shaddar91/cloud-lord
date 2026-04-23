@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cloud Lord — Infrastructure consultancy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: oklch(16% 0.012 250);
+    --bg-2: oklch(20% 0.014 250);
+    --bg-3: oklch(24% 0.016 250);
+    --line: oklch(30% 0.014 250);
+    --line-2: oklch(38% 0.018 250);
+    --fg: oklch(96% 0.005 250);
+    --fg-2: oklch(78% 0.01 250);
+    --fg-3: oklch(58% 0.012 250);
+    --accent: oklch(80% 0.14 180);
+    --accent-dim: oklch(55% 0.09 180);
+    --warn: oklch(78% 0.14 60);
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+    --body: 'Inter', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: var(--accent); }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ---------- NAV ---------- */
+  nav.top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in oklab, var(--bg) 85%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav.top .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+  .brand .mark {
+    width: 30px;
+    height: 30px;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px color-mix(in oklab, var(--accent) 40%, transparent));
+  }
+  .brand .name { color: var(--fg); }
+  .brand .sep { color: var(--fg-3); margin: 0 2px; }
+  .brand .role { color: var(--fg-3); }
+
+  nav.top ul {
+    list-style: none;
+    display: flex;
+    gap: 28px;
+    padding: 0;
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--fg-2);
+  }
+  nav.top ul a:hover { color: var(--accent); }
+  nav.top ul a { display: flex; align-items: center; gap: 6px; }
+  nav.top ul a::before { content: "→"; color: var(--fg-3); }
+  nav.top .cta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--bg);
+    background: var(--accent);
+    padding: 8px 14px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+  nav.top .cta:hover { background: var(--fg); color: var(--bg); }
+
+  @media (max-width: 720px) {
+    nav.top ul { display: none; }
+  }
+
+  /* ---------- HERO ---------- */
+  section.hero {
+    border-bottom: 1px solid var(--line);
+    padding: 80px 0 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 64px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  h1.claim {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(40px, 5.5vw, 72px);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    margin: 0 0 24px;
+    max-width: 16ch;
+  }
+  h1.claim .accent { color: var(--accent); font-style: italic; font-weight: 500; }
+
+  p.lede {
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--fg-2);
+    max-width: 52ch;
+    margin: 0 0 36px;
+  }
+  p.lede strong { color: var(--fg); font-weight: 500; }
+
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 12px 18px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid transparent;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--accent); color: var(--bg); }
+  .btn-primary:hover { background: var(--fg); color: var(--bg); }
+  .btn-ghost { border-color: var(--line-2); color: var(--fg); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* terminal panel */
+  .terminal {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.65;
+    overflow: hidden;
+  }
+  .terminal .chrome {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    color: var(--fg-3);
+    font-size: 11px;
+  }
+  .terminal .chrome .dots { display: flex; gap: 6px; }
+  .terminal .chrome .dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--bg-3);
+  }
+  .terminal .body { padding: 16px 18px; color: var(--fg-2); }
+  .terminal .prompt { color: var(--accent); }
+  .terminal .comment { color: var(--fg-3); }
+  .terminal .line { display: block; white-space: pre-wrap; }
+  .terminal .ok { color: var(--accent); }
+  .terminal .warn { color: var(--warn); }
+  .caret::after {
+    content: "▊";
+    color: var(--accent);
+    animation: blink 1s steps(1) infinite;
+    margin-left: 2px;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ---------- CAPABILITY STRIP ---------- */
+  section.proof {
+    border-bottom: 1px solid var(--line);
+    padding: 28px 0;
+    background: var(--bg-2);
+    overflow: hidden;
+  }
+  .proof-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  @media (max-width: 720px) {
+    .proof-grid { grid-template-columns: 1fr; gap: 16px; }
+  }
+  .proof-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--fg-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .proof-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--fg-2);
+  }
+  .chip {
+    border: 1px solid var(--line);
+    padding: 6px 12px;
+    border-radius: 999px;
+    color: var(--fg-2);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .chip::before {
+    content: "";
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ---------- SECTION HEADERS ---------- */
+  section.block { padding: 96px 0; border-bottom: 1px solid var(--line); }
+  section.block.alt { background: var(--bg-2); }
+
+  .section-head {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 64px;
+    margin-bottom: 56px;
+    align-items: start;
+  }
+  @media (max-width: 720px) {
+    .section-head { grid-template-columns: 1fr; gap: 16px; margin-bottom: 40px; }
+  }
+  .section-tag {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--fg-3);
+    letter-spacing: 0.04em;
+    padding-top: 8px;
+  }
+  .section-tag b { color: var(--accent); font-weight: 500; }
+  .section-title {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(28px, 3.2vw, 40px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+    max-width: 22ch;
+  }
+  .section-sub {
+    color: var(--fg-2);
+    font-size: 16px;
+    max-width: 58ch;
+    margin: 0;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 64px;
+  }
+  @media (max-width: 900px) {
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+  .about-copy p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--fg-2);
+    margin: 0 0 20px;
+  }
+  .about-copy p strong { color: var(--fg); font-weight: 500; }
+
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    align-self: start;
+  }
+  .stat {
+    background: var(--bg);
+    padding: 24px;
+  }
+  .stat .n {
+    font-family: var(--display);
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+  }
+  .stat .n .unit { color: var(--accent); font-size: 24px; margin-left: 2px; }
+  .stat .l {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--fg-3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  /* ---------- SERVICES: opinionated hierarchy ---------- */
+  .services-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+  }
+  .services-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  @media (max-width: 900px) {
+    .services-grid, .services-row { grid-template-columns: 1fr; }
+  }
+
+  .svc {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px;
+    position: relative;
+    transition: border-color 160ms ease, transform 160ms ease;
+  }
+  .svc:hover { border-color: var(--accent-dim); }
+  section.block.alt .svc { background: var(--bg); }
+
+  .svc-num {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--fg-3);
+  }
+  .svc-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+  }
+  .svc h3 {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 10px;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+  }
+  .svc p {
+    color: var(--fg-2);
+    font-size: 14.5px;
+    margin: 0 0 20px;
+    line-height: 1.6;
+  }
+  .svc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--fg-2);
+    display: grid;
+    gap: 6px;
+  }
+  .svc ul li {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+  }
+  .svc ul li::before {
+    content: "▸";
+    color: var(--accent);
+    font-size: 10px;
+  }
+
+  .svc.hero-svc {
+    background: linear-gradient(180deg,
+      color-mix(in oklab, var(--accent) 4%, var(--bg)) 0%,
+      var(--bg) 70%);
+    border-color: var(--accent-dim);
+    padding: 36px;
+  }
+  .svc.hero-svc h3 { font-size: 30px; }
+  .svc.hero-svc p { font-size: 16px; }
+
+  .svc-aside {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  .svc-aside .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--fg-3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .svc-aside h4 {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .svc-aside p {
+    font-size: 14px;
+    color: var(--fg-2);
+    margin: 0 0 20px;
+  }
+  .svc-aside .pillars {
+    display: grid;
+    gap: 10px;
+    margin-top: auto;
+  }
+  .pillar {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 10px 0;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .pillar:first-of-type { border-top: none; padding-top: 0; }
+  .pillar b { color: var(--fg); font-weight: 500; }
+  .pillar span { color: var(--fg-3); }
+
+  /* ---------- PROCESS / HOW I WORK ---------- */
+  .process {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  @media (max-width: 900px) { .process { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .process { grid-template-columns: 1fr; } }
+
+  .step {
+    padding: 28px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .step:last-child { border-right: none; }
+  @media (max-width: 900px) {
+    .step:nth-child(2) { border-right: none; }
+  }
+  @media (max-width: 520px) {
+    .step { border-right: none; }
+  }
+  .step-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+  }
+  .step h4 {
+    font-family: var(--display);
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .step p {
+    font-size: 13.5px;
+    color: var(--fg-2);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* ---------- CONTACT ---------- */
+  section.contact {
+    padding: 96px 0;
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  @media (max-width: 900px) {
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+  .contact h2 {
+    font-family: var(--display);
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin: 0 0 20px;
+    max-width: 14ch;
+  }
+  .contact h2 .accent { color: var(--accent); font-style: italic; font-weight: 500; }
+  .contact p {
+    font-size: 16px;
+    color: var(--fg-2);
+    margin: 0 0 28px;
+    max-width: 48ch;
+  }
+
+  .contact-card {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .contact-card .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+  }
+  .contact-card .row:first-child { border-top: none; padding-top: 0; }
+  .contact-card .row b { color: var(--fg-3); font-weight: 400; }
+  .contact-card .row a, .contact-card .row span { color: var(--fg); }
+  .contact-card .row a:hover { color: var(--accent); }
+
+  /* ---------- INQUIRY FORM ---------- */
+  .inquiry {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 32px;
+  }
+  .inquiry .form-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--fg-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .checks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 560px) { .checks { grid-template-columns: 1fr; } }
+  .check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--fg-2);
+    cursor: pointer;
+    transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+    user-select: none;
+  }
+  .check:hover { border-color: var(--line-2); color: var(--fg); }
+  .check input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border: 1px solid var(--line-2);
+    border-radius: 3px;
+    background: var(--bg);
+    display: grid;
+    place-items: center;
+    margin: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .check input:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .check input:checked::after {
+    content: "\2713";
+    color: var(--bg);
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .check:has(input:checked) {
+    color: var(--fg);
+    border-color: var(--accent-dim);
+    background: color-mix(in oklab, var(--accent) 6%, transparent);
+  }
+  .field { margin-bottom: 16px; }
+  .field input, .field textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 12px 14px;
+    color: var(--fg);
+    font-family: var(--body);
+    font-size: 14px;
+    resize: vertical;
+    transition: border-color 140ms ease;
+  }
+  .field input:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .field textarea { min-height: 110px; line-height: 1.55; }
+  .inquiry button {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 13px 18px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 140ms ease;
+    margin-top: 8px;
+  }
+  .inquiry button:hover { background: var(--fg); }
+  .form-hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--fg-3);
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  .availability {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--fg-2);
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 32px 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--fg-3);
+  }
+  footer .inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  footer a { color: var(--fg-2); }
+  footer .social { display: flex; gap: 20px; }
+
+  /* ---------- CONSENT BANNER ---------- */
+  .consent {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    max-width: 440px;
+    background: var(--bg-2);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 20px 22px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+    z-index: 100;
+    transform: translateY(24px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 320ms ease, opacity 320ms ease;
+  }
+  .consent.visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  @media (max-width: 560px) {
+    .consent { left: 16px; right: 16px; bottom: 16px; max-width: none; }
+  }
+  .consent-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--fg-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .consent p {
+    font-size: 13.5px;
+    color: var(--fg-2);
+    line-height: 1.55;
+    margin: 0 0 16px;
+  }
+  .consent p a { color: var(--accent); }
+  .consent-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .consent-btn {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 10px 14px;
+    background: transparent;
+    color: var(--fg);
+    border: 1px solid var(--line-2);
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    transition: border-color 140ms ease, color 140ms ease;
+  }
+  .consent-btn:hover, .consent-btn:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+
+  /* grid background accent on hero */
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, var(--line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 60% at 70% 40%, #000 20%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 70% 40%, #000 20%, transparent 70%);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .hero .container { position: relative; z-index: 1; }
+</style>
+</head>
+<body>
+
+<!-- ============== NAV ============== -->
+<nav class="top">
+  <div class="container inner">
+    <a href="#top" class="brand">
+      <img src="assets/logo.png" alt="Cloud Lord" class="mark">
+      <span class="name">cloud-lord</span>
+      <span class="sep">//</span>
+      <span class="role">t. ivanovic</span>
+    </a>
+    <ul>
+      <li><a href="#work">work</a></li>
+      <li><a href="#services">services</a></li>
+      <li><a href="#process">process</a></li>
+    </ul>
+    <a href="#contact" class="cta">book intro →</a>
+  </div>
+</nav>
+
+<!-- ============== HERO ============== -->
+<section class="hero" id="top">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow">Available · 1 slot open</div>
+      <h1 class="claim">
+        Turn your cloud into <span class="accent">a real platform.</span>
+      </h1>
+      <p class="lede">
+        I'm Tomislav, a platform engineer and cloud architect based in Belgrade.
+        I formalize <strong>AWS environments</strong> into proper platforms with DevOps automation,
+        and help teams adopt <strong>LLMs and AI tooling</strong> as a company-wide standard.
+      </p>
+      <div class="cta-row">
+        <a href="#contact" class="btn btn-primary">Send an inquiry →</a>
+        <a href="#services" class="btn btn-ghost">See services</a>
+      </div>
+    </div>
+
+    <div class="terminal" aria-hidden="true">
+      <div class="chrome">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div>~/cloud-lord / bash</div>
+      </div>
+      <div class="body">
+<span class="line"><span class="prompt">$</span> whoami</span>
+<span class="line">tomislav ivanovic</span>
+<span class="line"><span class="comment"># platform eng · cloud architect · ai enablement</span></span>
+<br>
+<span class="line"><span class="prompt">$</span> stack --primary</span>
+<span class="line">aws · hetzner · terraform · kubernetes</span>
+<span class="line">ansible · kafka · rabbitmq · elk</span>
+<br>
+<span class="line"><span class="prompt">$</span> status</span>
+<span class="line"><span class="ok">● available</span>, taking one engagement</span>
+<span class="line caret"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CAPABILITY STRIP ============== -->
+<section class="proof">
+  <div class="container proof-grid">
+    <div class="proof-label">Known for</div>
+    <div class="proof-items">
+      <span class="chip">AWS platform engineering</span>
+      <span class="chip">AWS and Hetzner</span>
+      <span class="chip">Terraform</span>
+      <span class="chip">Kubernetes</span>
+      <span class="chip">CI/CD automation</span>
+      <span class="chip">ELK observability</span>
+      <span class="chip">Kafka and RabbitMQ</span>
+      <span class="chip">LLM enablement</span>
+      <span class="chip">Company-wide AI adoption</span>
+      <span class="chip">MCP servers</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============== ABOUT ============== -->
+<section class="block" id="about">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-tag"><b>01</b> / about</div>
+      <div>
+        <h2 class="section-title">A platform engineer for the AWS work you haven't formalized yet.</h2>
+        <p class="section-sub">Teams bring me in when their AWS has grown organically, when a migration or upgrade is overdue, or when leadership wants a real plan for how the company actually uses AI.</p>
+      </div>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-copy">
+        <p><strong>I work Infrastructure-as-Code, end to end.</strong> Every environment I touch leaves in Terraform or Pulumi with a CI pipeline and a handoff doc. Nothing clicked in a console, nothing secret to my head.</p>
+        <p>My standard engagement is formalizing an AWS environment into a real platform: networking, accounts, IaC, CI/CD, observability, so your team stops firefighting and starts shipping. From there it extends into cloud migrations, AI adoption, or platform upgrades, depending on where you are.</p>
+        <p>I spent eight years inside platform teams before going independent. That's the lens I bring: infra that the people around it can actually read, own, and extend.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="n">8<span class="unit">yr</span></div>
+          <div class="l">in production infra</div>
+        </div>
+        <div class="stat">
+          <div class="n">0</div>
+          <div class="l">click-ops environments</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SERVICES ============== -->
+<section class="block alt" id="services">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-tag"><b>02</b> / services</div>
+      <div>
+        <h2 class="section-title">What I do, and what I lead with.</h2>
+        <p class="section-sub">AWS platform engineering is the core. Migrations, automation, and AI enablement build on top of it.</p>
+      </div>
+    </div>
+
+    <div class="services-grid">
+      <!-- HERO SERVICE -->
+      <div class="svc hero-svc">
+        <div class="svc-num">01 / primary</div>
+        <div class="svc-tag">■ aws platform engineering</div>
+        <h3>Formalize your AWS into a real platform: networking, accounts, IaC, CI/CD.</h3>
+        <p>The work most teams hire me for. I take an AWS environment that grew organically and turn it into a versioned, reviewable platform: account structure, VPC and networking, Terraform or Pulumi modules, pipelines, and observability sized for your team.</p>
+        <ul>
+          <li>Multi-account AWS architecture, landing zones</li>
+          <li>Terraform, modular and reviewable</li>
+          <li>CI pipelines: GitHub Actions, Jenkins, CircleCI, Bitbucket</li>
+          <li>Observability: Prometheus, Grafana, ELK stack</li>
+          <li>Secrets and access: SSM / Vault, IAM baselines</li>
+        </ul>
+      </div>
+
+      <!-- ASIDE: the pillars -->
+      <div class="svc-aside">
+        <div class="label">// Core stack</div>
+        <h4>What I actually use day-to-day.</h4>
+        <p>Short list on purpose. I go deep on these, not wide on every logo.</p>
+        <div class="pillars">
+          <div class="pillar"><b>Cloud</b><span>AWS · Hetzner</span></div>
+          <div class="pillar"><b>IaC</b><span>Terraform · Ansible</span></div>
+          <div class="pillar"><b>Orchestration</b><span>Kubernetes · Helm</span></div>
+          <div class="pillar"><b>Observability</b><span>Prometheus · Grafana · ELK</span></div>
+          <div class="pillar"><b>Messaging</b><span>Kafka · RabbitMQ</span></div>
+          <div class="pillar"><b>AI</b><span>Claude · OpenAI · Whisper · ChromaDB · MCP</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="services-row">
+      <div class="svc">
+        <div class="svc-num">02</div>
+        <div class="svc-tag">■ automation &amp; devops</div>
+        <h3>CI/CD and IaC that your team can read, review, and own.</h3>
+        <p>Pipelines, release flows, deployment strategies, and IaC modules designed to be reviewable, not a black box only I can touch.</p>
+        <ul>
+          <li>GitHub Actions · Jenkins · CircleCI · Bitbucket</li>
+          <li>Terraform modules, reusable across teams</li>
+          <li>Ansible for configuration and golden images</li>
+        </ul>
+      </div>
+
+      <div class="svc">
+        <div class="svc-num">03</div>
+        <div class="svc-tag">■ cloud migration</div>
+        <h3>Move to AWS without rewriting your company mid-flight.</h3>
+        <p>Phased migrations off legacy providers or on-prem, with a paved path: accounts, networking, data, CI, in a sequence that keeps you shipping.</p>
+        <ul>
+          <li>Discovery &amp; sequencing plan</li>
+          <li>Data migration · Postgres · MySQL</li>
+          <li>Messaging &amp; streaming (Kafka · RabbitMQ)</li>
+        </ul>
+      </div>
+
+      <div class="svc">
+        <div class="svc-num">04</div>
+        <div class="svc-tag">■ ai enablement</div>
+        <h3>Secure LLM enablement and company-wide AI adoption standards.</h3>
+        <p>I'm not an ML engineer. I set up the models, tooling, and processes the right way: securely, with guardrails, and with standards your whole company can actually follow. I track the AI space closely and usually sit 6 to 8 months ahead of what lands in the mainstream, so what you adopt today still holds up next quarter.</p>
+        <p>I also run my own custom agentic framework (a paradigm beyond LangChain / LangGraph) when a project needs deeper control than off-the-shelf tooling gives. That includes MCP servers, both existing and custom-built, to wire models into your real systems.</p>
+        <ul>
+          <li>Models: Claude, OpenAI, Whisper</li>
+          <li>Vector and retrieval: ChromaDB, Ory / Lumen stack</li>
+          <li>LangChain, LangGraph, or custom agent framework</li>
+          <li>MCP servers, existing or custom</li>
+          <li>Company-wide usage standards and guardrails</li>
+          <li>Secure integration into engineering workflow</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PROCESS ============== -->
+<section class="block" id="process">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-tag"><b>03</b> / process</div>
+      <div>
+        <h2 class="section-title">How an engagement actually goes.</h2>
+        <p class="section-sub">No surprises, no scope creep. Fixed-scope audit first, then implementation in clear two-week chunks.</p>
+      </div>
+    </div>
+
+    <div class="process">
+      <div class="step">
+        <div class="step-num">step / 01 · week 0</div>
+        <h4>Intro call</h4>
+        <p>30 minutes. You describe the stack and the pain. I tell you honestly whether I'm the right person, and who is, if not.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">step / 02 · week 1–2</div>
+        <h4>Audit</h4>
+        <p>Fixed price. I read your infra, your repos, your AWS bill. You get a written report: risks, wins, a prioritised plan.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">step / 03 · week 3–12</div>
+        <h4>Implementation</h4>
+        <p>Two-week iterations. Weekly demo, daily async updates, PRs reviewable by your team. Everything in code, nothing in my head.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">step / 04 · ongoing</div>
+        <h4>Handoff</h4>
+        <p>Docs and handoff: architecture overview, IaC walkthrough, a half-day session with your team. I stay on retainer for 30 days, after that you own it, cleanly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CONTACT ============== -->
+<section class="contact" id="contact">
+  <div class="container contact-grid">
+    <div>
+      <h2>Need someone who can turn your cloud into <span class="accent">a platform?</span></h2>
+      <p>Tick what you're thinking about, add a few lines, and send it over. Inquiries go to <strong>engineering@cloud-lord.com</strong>. I reply within one business day.</p>
+
+      <div class="contact-card" style="margin-top: 8px;">
+        <div class="row"><b>inquiries</b><a href="mailto:engineering@cloud-lord.com">engineering@cloud-lord.com</a></div>
+        <div class="row"><b>personal</b><a href="mailto:tomislav@cloud-lord.com">tomislav@cloud-lord.com</a></div>
+        <div class="row"><b>linkedin</b><a href="#">/in/tomislav-ivanovic</a></div>
+        <div class="row"><b>github</b><a href="#">@cloud-lord</a></div>
+        <div class="row"><b>based in</b><span>Belgrade, Serbia · CET</span></div>
+        <div class="row"><b>works with</b><span>Anywhere, any timezone</span></div>
+        <div class="availability">
+          <span class="dot"></span> Available now · taking one engagement
+        </div>
+      </div>
+    </div>
+
+    <form class="inquiry" id="inquiryForm" onsubmit="return sendInquiry(event)">
+      <label class="form-label">// What are you thinking about?</label>
+      <div class="checks">
+        <label class="check"><input type="checkbox" name="interest" value="Platform level-up / upgrade">Platform level-up / upgrade</label>
+        <label class="check"><input type="checkbox" name="interest" value="Automation (CI/CD, IaC)">Automation (CI/CD, IaC)</label>
+        <label class="check"><input type="checkbox" name="interest" value="Cloud migration">Cloud migration</label>
+        <label class="check"><input type="checkbox" name="interest" value="DevOps / cloud architecture">DevOps / cloud architecture</label>
+        <label class="check"><input type="checkbox" name="interest" value="Kubernetes platforms">Kubernetes platforms</label>
+        <label class="check"><input type="checkbox" name="interest" value="Data pipelines &amp; messaging (Kafka / RabbitMQ)">Data pipelines &amp; messaging</label>
+        <label class="check"><input type="checkbox" name="interest" value="AI systems &amp; integration">AI systems &amp; integration</label>
+        <label class="check"><input type="checkbox" name="interest" value="Company-wide AI adoption &amp; standards">Company-wide AI adoption</label>
+        <label class="check"><input type="checkbox" name="interest" value="SIEM / security tooling">SIEM / security tooling</label>
+        <label class="check"><input type="checkbox" name="interest" value="Other / not sure yet">Other / not sure yet</label>
+      </div>
+
+      <label class="form-label">// Your email</label>
+      <div class="field">
+        <input type="email" name="email" placeholder="you@company.com" required>
+      </div>
+
+      <label class="form-label">// What's the situation?</label>
+      <div class="field">
+        <textarea name="message" placeholder="A few sentences about the stack, the team size, and what's broken or planned." required></textarea>
+      </div>
+
+      <button type="submit">Send inquiry →</button>
+      <div class="form-hint">Opens your mail client · goes to engineering@cloud-lord.com</div>
+    </form>
+  </div>
+</section>
+
+<script>
+  function sendInquiry(e) {
+    e.preventDefault();
+    const form = e.target;
+    const interests = Array.from(form.querySelectorAll('input[name="interest"]:checked')).map(i => i.value);
+    const email = form.email.value.trim();
+    const message = form.message.value.trim();
+
+    const subject = interests.length
+      ? 'Inquiry: ' + interests.slice(0, 3).join(' · ') + (interests.length > 3 ? ' + more' : '')
+      : 'Inquiry from cloud-lord.com';
+
+    const body = [
+      'Interests:',
+      interests.length ? interests.map(i => '  - ' + i).join('\n') : '  (none selected)',
+      '',
+      'From: ' + email,
+      '',
+      'Message:',
+      message,
+      '',
+      '---',
+      'Sent from cloud-lord.com'
+    ].join('\n');
+
+    window.location.href = 'mailto:engineering@cloud-lord.com'
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(body);
+    return false;
+  }
+</script>
+
+<!-- ============== FOOTER ============== -->
+<footer>
+  <div class="container inner">
+    <div>© 2026 cloud-lord.com · built and hosted by t. ivanovic · Belgrade</div>
+    <div class="social">
+      <a href="#">linkedin</a>
+      <a href="#">github</a>
+      <a href="mailto:engineering@cloud-lord.com">email</a>
+      <a href="privacy.html">privacy</a>
+      <a href="#" id="clOpenPrivacy">privacy settings</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ============== CONSENT BANNER ============== -->
+<div id="clPrivacyNotice" class="consent" role="dialog" aria-label="Cookie consent" aria-hidden="true">
+  <div class="consent-inner">
+    <div class="consent-copy">
+      <div class="consent-title">Privacy choice</div>
+      <p>
+        We use cookies to understand how this site is used. Data is stored on our own server
+        and never shared with third parties.
+        <a href="privacy.html">Read the privacy policy →</a>
+      </p>
+    </div>
+    <div class="consent-actions">
+      <button type="button" class="consent-btn" data-consent="reject">Reject</button>
+      <button type="button" class="consent-btn" data-consent="accept">Accept</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const STORAGE_KEY = 'cl_consent_v1';
+    const banner = document.getElementById('clPrivacyNotice');
+    const openLink = document.getElementById('clOpenPrivacy');
+
+    function show() {
+      banner.classList.add('visible');
+      banner.setAttribute('aria-hidden', 'false');
+      setTimeout(() => {
+        const first = banner.querySelector('[data-consent="reject"]');
+        if (first) first.focus();
+      }, 50);
+    }
+    function hide() {
+      banner.classList.remove('visible');
+      banner.setAttribute('aria-hidden', 'true');
+    }
+    function record(value) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ value: value, ts: Date.now() }));
+      } catch (e) {}
+      hide();
+    }
+
+    banner.querySelectorAll('[data-consent]').forEach(b => {
+      b.addEventListener('click', () => record(b.dataset.consent));
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && banner.classList.contains('visible')) record('reject');
+    });
+
+    if (openLink) openLink.addEventListener('click', e => { e.preventDefault(); show(); });
+
+    let existing = null;
+    try { existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch (e) {}
+    if (!existing) setTimeout(show, 500);
+  })();
+</script>
+
+</body>
+</html>
