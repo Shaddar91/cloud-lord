@@ -4,6 +4,9 @@ import ConsentToggle from '../components/privacy/ConsentToggle';
 import ForgetMeButton from '../components/privacy/ForgetMeButton';
 import LastUpdated from '../components/privacy/LastUpdated';
 import { tokens } from '../theme';
+import { track, trackGoal, GOALS } from '../lib/tracking';
+
+const onMailto = () => { track('Outbound', 'Email'); trackGoal(GOALS.OUTBOUND_EMAIL); };
 
 const sectionH = {
   fontFamily: tokens.display,
@@ -191,7 +194,7 @@ const Privacy = () => (
       </Box>
       <Box component="p" sx={paraSx}>
         To exercise any of these, email{' '}
-        <Box component="a" href="mailto:privacy@cloud-lord.com" data-track="mailto-click" sx={{ color: tokens.accent, textDecoration: 'none', '&:hover': { color: tokens.fg } }}>
+        <Box component="a" href="mailto:privacy@cloud-lord.com" data-track="mailto-click" onClick={onMailto} sx={{ color: tokens.accent, textDecoration: 'none', '&:hover': { color: tokens.fg } }}>
           <Box component="strong" sx={{ fontWeight: 500 }}>privacy@cloud-lord.com</Box>
         </Box>
         . Because the data is pseudonymous &mdash; tied to a cookie-held visitor ID rather than a name or email &mdash; I will ask you to include the value of your <Box component="code" sx={{ fontFamily: tokens.mono }}>_pk_id</Box> cookie in your request so the right records can be located. If you cannot provide it, GDPR Art. 11 and the equivalent provision in ZZPL apply: I am not required to collect extra identifying data just to answer the request, but clearing the <Box component="code" sx={{ fontFamily: tokens.mono }}>_pk_*</Box> cookies from your browser detaches you from any future session regardless.

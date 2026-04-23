@@ -1,6 +1,7 @@
 import { Box, Container } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { tokens } from '../theme';
+import { track, trackGoal, GOALS } from '../lib/tracking';
 
 const linkSx = {
   color: tokens.fg2,
@@ -21,6 +22,10 @@ const Footer = () => {
     } catch (_err) { /* ignore storage errors */ }
     window.dispatchEvent(new CustomEvent('cloudlord:reopen-consent'));
   };
+
+  const onLinkedin = () => { track('Outbound', 'LinkedIn'); trackGoal(GOALS.OUTBOUND_LINKEDIN); };
+  const onGithub = () => { track('Outbound', 'GitHub'); trackGoal(GOALS.OUTBOUND_GITHUB); };
+  const onEmail = () => { track('Outbound', 'Email'); trackGoal(GOALS.OUTBOUND_EMAIL); };
 
   return (
     <Box
@@ -51,6 +56,7 @@ const Footer = () => {
               target="_blank"
               rel="noopener noreferrer"
               data-track="linkedin-click"
+              onClick={onLinkedin}
               sx={linkSx}
             >
               linkedin
@@ -61,6 +67,7 @@ const Footer = () => {
               target="_blank"
               rel="noopener noreferrer"
               data-track="github-click"
+              onClick={onGithub}
               sx={linkSx}
             >
               github
@@ -69,6 +76,7 @@ const Footer = () => {
               component="a"
               href="mailto:engineering@cloud-lord.com"
               data-track="mailto-click"
+              onClick={onEmail}
               sx={linkSx}
             >
               email

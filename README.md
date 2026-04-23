@@ -96,6 +96,25 @@ cloud-lord/
 **Access URL**: http://localhost:5173
 **Build command**: `npm run build`
 
+## Local dev
+
+The contact form talks to the Blazar API (nonce + submit). By default it
+points at the production endpoint `https://api.cloud-lord.com`. To point
+at a Blazar instance running locally, copy `.env.example` to `.env.local`
+and override the base URL:
+
+```bash
+cp .env.example .env.local
+# then edit .env.local:
+# VITE_API_BASE=http://localhost:3030
+```
+
+Vite picks up `.env.local` automatically on `npm run dev`.
+
+Matomo tracking is consent-gated: the `<ConsentBanner>` must be accepted
+before any `_paq` commands are flushed. Until Matomo's script is injected
+(C35 wizard), `track()` / `trackGoal()` calls are queued safely in-memory.
+
 ---
 
 Built with React + Vite

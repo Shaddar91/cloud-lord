@@ -1,48 +1,84 @@
 // Contract D5: well-defined contact-form submit handler.
-// Component 42 (E14) will swap the mailto fallback for a Blazar POST.
+// Component 42 (E14): wires Contact form to Blazar.
 //
-// Signature:
-//   submitInquiry({ interests, email, message }) -> Promise<{ ok, mode }>
-// Current implementation opens the user's mail client (matches the design
-// reference). Future Blazar-backed revision will fetch
-// `https://api.cloud-lord.com/nonce` and POST to
-// `https://api.cloud-lord.com/contact` instead.
+// Flow:
+//   1. GET  /nonce    -> { nonce }       (server HMAC, 5-min TTL)
+//   2. POST /contact  with { ...fields, nonce }
+//
+// Server behaviors:
+//   - 200/201: submission accepted, mail queued.
+//   - 204: silent reject (honeypot hit or per-IP/global rate limit).
+//          Treated as "ok" client-side so we never reveal the block.
+//   - 4xx/5xx: surfaced as an error for the UI.
 
-export async function submitInquiry({ interests = [], email, message }) {
+const API_BASE = import.meta.env.VITE_API_BASE || 'https://api.cloud-lord.com';
+
+export async function fetchNonce() {
+  const res = await fetch(`${API_BASE}/nonce`, {
+    method: 'GET',
+    credentials: 'omit',
+  });
+  if (!res.ok) throw new Error(`nonce fetch failed: ${res.status}`);
+  const data = await res.json();
+  if (!data || !data.nonce) throw new Error('nonce fetch: missing nonce in response');
+  return data.nonce;
+}
+
+export async function submitInquiry(fields = {}) {
+  const {
+    name,
+    email,
+    subject,
+    message,
+    honeypot,
+    interests = [],
+  } = fields;
+
   if (!email || !message) {
     return { ok: false, mode: 'validation', error: 'email and message are required' };
   }
 
-  const subject =
-    interests.length > 0
+  // Derive subject from interests if caller didn't pass one explicitly.
+  const derivedSubject =
+    subject ||
+    (interests.length > 0
       ? `Inquiry: ${interests.slice(0, 3).join(' · ')}${interests.length > 3 ? ' + more' : ''}`
-      : 'Inquiry from cloud-lord.com';
+      : 'Inquiry from cloud-lord.com');
 
-  const bodyLines = [
-    'Interests:',
-    interests.length > 0 ? interests.map((i) => `  - ${i}`).join('\n') : '  (none selected)',
-    '',
-    `From: ${email}`,
-    '',
-    'Message:',
+  const nonce = await fetchNonce();
+
+  const payload = {
+    name,
+    email,
+    subject: derivedSubject,
     message,
-    '',
-    '---',
-    'Sent from cloud-lord.com',
-  ];
+    interests,
+    honeypot,
+    nonce,
+  };
 
-  const mailto =
-    'mailto:engineering@cloud-lord.com' +
-    '?subject=' +
-    encodeURIComponent(subject) +
-    '&body=' +
-    encodeURIComponent(bodyLines.join('\n'));
+  const res = await fetch(`${API_BASE}/contact`, {
+    method: 'POST',
+    credentials: 'omit',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-nonce': nonce,
+    },
+    body: JSON.stringify(payload),
+  });
 
-  if (typeof window !== 'undefined') {
-    window.location.href = mailto;
+  // Silent-reject path: honeypot or rate-limit. Server answers 204.
+  if (res.status === 204) {
+    return { ok: true, mode: 'silent' };
   }
 
-  return { ok: true, mode: 'mailto' };
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`submit failed: ${res.status} ${text}`);
+  }
+
+  const data = await res.json().catch(() => ({}));
+  return { ok: true, mode: 'sent', data };
 }
 
 export default submitInquiry;

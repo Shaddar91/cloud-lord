@@ -1,5 +1,8 @@
 import { Box, Card } from '@mui/material';
 import { tokens } from '../../theme';
+import { track, trackGoal, GOALS } from '../../lib/tracking';
+
+const onMailto = () => { track('Outbound', 'Email'); trackGoal(GOALS.OUTBOUND_EMAIL); };
 
 /* F5 stub: real implementation by Component 45 */
 const ControllerIdentityCard = () => (
@@ -37,6 +40,7 @@ const ControllerIdentityCard = () => (
         component="a"
         href="mailto:privacy@cloud-lord.com"
         data-track="mailto-click"
+        onClick={onMailto}
         sx={{ color: tokens.accent, textDecoration: 'none', '&:hover': { color: tokens.fg } }}
       >
         privacy@cloud-lord.com

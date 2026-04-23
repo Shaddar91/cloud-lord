@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { Box, Container } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
+import { Box, Container, Alert, CircularProgress } from '@mui/material';
 import { tokens } from '../theme';
 import submitInquiry from '../lib/contactSubmit';
+import { track, trackGoal, GOALS } from '../lib/tracking';
 
 const INTERESTS = [
   'Platform level-up / upgrade',
@@ -45,6 +46,15 @@ const Contact = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [hp, setHp] = useState(''); // honeypot
+  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState(null); // { severity, text }
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const toggleInterest = (value) => {
     setInterests((prev) =>
@@ -52,10 +62,55 @@ const Contact = () => {
     );
   };
 
+  const showStatus = (severity, text) => {
+    setStatus({ severity, text });
+    if (timerRef.current) window.clearTimeout(timerRef.current);
+    timerRef.current = window.setTimeout(() => setStatus(null), 5000);
+  };
+
+  const resetForm = () => {
+    setInterests([]);
+    setEmail('');
+    setMessage('');
+    setHp('');
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (hp) return; // honeypot — silent drop
-    await submitInquiry({ interests, email, message });
+    if (submitting) return;
+    if (hp) {
+      // Client-side honeypot short-circuit. Server will also silently drop.
+      return;
+    }
+    setSubmitting(true);
+    setStatus(null);
+    try {
+      const result = await submitInquiry({
+        email,
+        message,
+        interests,
+        honeypot: hp,
+      });
+      if (result && result.ok) {
+        // D1: contact-submit conversion event (queued into _paq; fires
+        // once Matomo init + consent land).
+        track('Contact', 'Submit');
+        trackGoal(GOALS.CONTACT_SUBMIT);
+        showStatus('success', 'Thanks — your inquiry is on its way. I reply within one business day.');
+        resetForm();
+      } else {
+        showStatus('error', (result && result.error) || 'Something went wrong, please try again later.');
+      }
+    } catch (err) {
+      // Network or 5xx — generic message, no internals leaked.
+      showStatus('error', 'Something went wrong, please try again later.');
+      if (typeof console !== 'undefined') {
+        // eslint-disable-next-line no-console
+        console.error('contact submit failed:', err);
+      }
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -112,10 +167,10 @@ const Contact = () => {
               }}
             >
               {[
-                ['inquiries', <Box component="a" href="mailto:engineering@cloud-lord.com" data-track="mailto-click" sx={{ color: tokens.fg, '&:hover': { color: tokens.accent } }} key="e">engineering@cloud-lord.com</Box>],
-                ['personal', <Box component="a" href="mailto:tomislav@cloud-lord.com" data-track="mailto-click" sx={{ color: tokens.fg, '&:hover': { color: tokens.accent } }} key="p">tomislav@cloud-lord.com</Box>],
-                ['linkedin', <Box component="a" href="https://www.linkedin.com/in/tomislav-ivanovic-124b13115" target="_blank" rel="noopener noreferrer" data-track="linkedin-click" sx={{ color: tokens.fg, '&:hover': { color: tokens.accent } }} key="l">/in/tomislav-ivanovic</Box>],
-                ['github', <Box component="a" href="https://github.com/Shaddar91" target="_blank" rel="noopener noreferrer" data-track="github-click" sx={{ color: tokens.fg, '&:hover': { color: tokens.accent } }} key="g">@Shaddar91</Box>],
+                ['inquiries', <Box component="a" href="mailto:engineering@cloud-lord.com" data-track="mailto-click" onClick={() => { track('Outbound', 'Email'); trackGoal(GOALS.OUTBOUND_EMAIL); }} sx={{ color: tokens.fg, '&:hover': { color: tokens.accent } }} key="e">engineering@cloud-lord.com</Box>],
+                ['personal', <Box component="a" href="mailto:tomislav@cloud-lord.com" data-track="mailto-click" onClick={() => { track('Outbound', 'Email'); trackGoal(GOALS.OUTBOUND_EMAIL); }} sx={{ color: tokens.fg, '&:hover': { color: tokens.accent } }} key="p">tomislav@cloud-lord.com</Box>],
+                ['linkedin', <Box component="a" href="https://www.linkedin.com/in/tomislav-ivanovic-124b13115" target="_blank" rel="noopener noreferrer" data-track="linkedin-click" onClick={() => { track('Outbound', 'LinkedIn'); trackGoal(GOALS.OUTBOUND_LINKEDIN); }} sx={{ color: tokens.fg, '&:hover': { color: tokens.accent } }} key="l">/in/tomislav-ivanovic</Box>],
+                ['github', <Box component="a" href="https://github.com/Shaddar91" target="_blank" rel="noopener noreferrer" data-track="github-click" onClick={() => { track('Outbound', 'GitHub'); trackGoal(GOALS.OUTBOUND_GITHUB); }} sx={{ color: tokens.fg, '&:hover': { color: tokens.accent } }} key="g">@Shaddar91</Box>],
                 ['based in', <span key="b" style={{ color: tokens.fg }}>Belgrade, Serbia · CET</span>],
                 ['works with', <span key="w" style={{ color: tokens.fg }}>Anywhere, any timezone</span>],
               ].map(([label, node], idx) => (
@@ -163,7 +218,7 @@ const Contact = () => {
               p: { xs: '20px', md: '32px' },
             }}
           >
-            {/* Honeypot — visually hidden */}
+            {/* Honeypot — visually hidden, screen-reader hidden, tab-skipped */}
             <Box
               component="input"
               type="text"
@@ -172,6 +227,7 @@ const Contact = () => {
               onChange={(e) => setHp(e.target.value)}
               tabIndex={-1}
               autoComplete="off"
+              aria-hidden="true"
               sx={{
                 position: 'absolute',
                 left: '-10000px',
@@ -264,10 +320,19 @@ const Contact = () => {
               />
             </Box>
 
+            {status && (
+              <Box sx={{ mb: '12px' }}>
+                <Alert severity={status.severity} variant="outlined" sx={{ fontFamily: tokens.body, fontSize: 13 }}>
+                  {status.text}
+                </Alert>
+              </Box>
+            )}
+
             <Box
               component="button"
               type="submit"
               data-track="contact-submit"
+              disabled={submitting}
               sx={{
                 width: '100%',
                 fontFamily: tokens.mono,
@@ -277,13 +342,20 @@ const Contact = () => {
                 color: tokens.bg,
                 border: 'none',
                 borderRadius: '6px',
-                cursor: 'pointer',
-                transition: 'background 140ms ease',
+                cursor: submitting ? 'not-allowed' : 'pointer',
+                opacity: submitting ? 0.7 : 1,
+                transition: 'background 140ms ease, opacity 140ms ease',
                 mt: '8px',
-                '&:hover': { background: tokens.fg },
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px',
+                '&:hover': { background: submitting ? tokens.accent : tokens.fg },
+                '&:disabled': { cursor: 'not-allowed' },
               }}
             >
-              Send inquiry &rarr;
+              {submitting && <CircularProgress size={16} thickness={5} sx={{ color: tokens.bg }} />}
+              {submitting ? 'Sending…' : 'Send inquiry →'}
             </Box>
             <Box
               sx={{
@@ -294,7 +366,7 @@ const Contact = () => {
                 textAlign: 'center',
               }}
             >
-              Opens your mail client &middot; goes to engineering@cloud-lord.com
+              Sent to engineering@cloud-lord.com &middot; reply within 1 business day
             </Box>
           </Box>
         </Box>
