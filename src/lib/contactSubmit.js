@@ -6,12 +6,12 @@
 //   2. POST /contact  with { ...fields, nonce }
 //
 // Server behaviors:
-//   - 200/201: submission accepted, mail queued.
-//   - 204: silent reject (honeypot hit or per-IP/global rate limit).
-//          Treated as "ok" client-side so we never reveal the block.
-//   - 4xx/5xx: surfaced as an error for the UI.
+//   - 2xx: treated as accepted.
+//   - Any non-2xx (204 silent-reject, 4xx, 5xx): treated as silent success
+//     client-side. The user must NEVER see an error from this path so
+//     bots/abusers cannot distinguish a block from a delivery.
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'https://api.cloud-lord.com';
+const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 export async function fetchNonce() {
   const res = await fetch(`${API_BASE}/nonce`, {
@@ -26,19 +26,22 @@ export async function fetchNonce() {
 
 export async function submitInquiry(fields = {}) {
   const {
-    name,
+    name = '',
     email,
     subject,
     message,
-    honeypot,
     interests = [],
+    company_address = '',
+    website_url = '',
+    phone_alt = '',
+    fax = '',
   } = fields;
 
   if (!email || !message) {
     return { ok: false, mode: 'validation', error: 'email and message are required' };
   }
 
-  // Derive subject from interests if caller didn't pass one explicitly.
+  //Derive subject from interests if caller didn't pass one explicitly.
   const derivedSubject =
     subject ||
     (interests.length > 0
@@ -53,7 +56,10 @@ export async function submitInquiry(fields = {}) {
     subject: derivedSubject,
     message,
     interests,
-    honeypot,
+    company_address,
+    website_url,
+    phone_alt,
+    fax,
     nonce,
   };
 
@@ -67,18 +73,17 @@ export async function submitInquiry(fields = {}) {
     body: JSON.stringify(payload),
   });
 
-  // Silent-reject path: honeypot or rate-limit. Server answers 204.
-  if (res.status === 204) {
-    return { ok: true, mode: 'silent' };
+  //Any 2xx → accepted. Anything else (204, 4xx, 5xx) → silent success.
+  //The user must NEVER see an error from this path.
+  if (res.status >= 200 && res.status <= 299) {
+    const data = await res.json().catch(() => ({}));
+    return { ok: true, mode: 'sent', data };
   }
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`submit failed: ${res.status} ${text}`);
+  if (typeof console !== 'undefined') {
+    console.warn(`contact submit: unexpected status ${res.status}, treating as silent success`);
   }
-
-  const data = await res.json().catch(() => ({}));
-  return { ok: true, mode: 'sent', data };
+  return { ok: true, mode: 'silent' };
 }
 
 export default submitInquiry;

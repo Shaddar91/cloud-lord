@@ -43,9 +43,15 @@ const inputSx = {
 
 const Contact = () => {
   const [interests, setInterests] = useState([]);
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [hp, setHp] = useState(''); // honeypot
+  //FE2: four decoy fields, names match BLZ3 (company_address, website_url, phone_alt, fax).
+  //If any is non-empty, treat as bot — short-circuit with masqueraded success in onSubmit.
+  const [hpCompany, setHpCompany] = useState('');
+  const [hpWebsite, setHpWebsite] = useState('');
+  const [hpPhone, setHpPhone] = useState('');
+  const [hpFax, setHpFax] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState(null); // { severity, text }
   const timerRef = useRef(null);
@@ -70,26 +76,37 @@ const Contact = () => {
 
   const resetForm = () => {
     setInterests([]);
+    setName('');
     setEmail('');
     setMessage('');
-    setHp('');
+    setHpCompany('');
+    setHpWebsite('');
+    setHpPhone('');
+    setHpFax('');
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return;
-    if (hp) {
-      // Client-side honeypot short-circuit. Server will also silently drop.
+    if (hpCompany || hpWebsite || hpPhone || hpFax) {
+      //Any decoy filled → bot. Masquerade as success so the trigger is
+      //indistinguishable from a real submit; never fire the network request.
+      showStatus('success', 'Thanks — your inquiry is on its way. I reply within one business day.');
+      resetForm();
       return;
     }
     setSubmitting(true);
     setStatus(null);
     try {
       const result = await submitInquiry({
+        name,
         email,
         message,
         interests,
-        honeypot: hp,
+        company_address: hpCompany,
+        website_url: hpWebsite,
+        phone_alt: hpPhone,
+        fax: hpFax,
       });
       if (result && result.ok) {
         // D1: contact-submit conversion event (queued into _paq; fires
@@ -218,24 +235,33 @@ const Contact = () => {
               p: { xs: '20px', md: '32px' },
             }}
           >
-            {/* Honeypot — visually hidden, screen-reader hidden, tab-skipped */}
-            <Box
-              component="input"
-              type="text"
-              name="company"
-              value={hp}
-              onChange={(e) => setHp(e.target.value)}
-              tabIndex={-1}
-              autoComplete="off"
-              aria-hidden="true"
-              sx={{
-                position: 'absolute',
-                left: '-10000px',
-                width: '1px',
-                height: '1px',
-                overflow: 'hidden',
-              }}
-            />
+            {/* FE2: four decoy fields — visually hidden, screen-reader hidden, tab-skipped.
+                Names match BLZ3's SendRequest keys (company_address, website_url, phone_alt, fax). */}
+            {[
+              { name: 'company_address', value: hpCompany, set: setHpCompany },
+              { name: 'website_url', value: hpWebsite, set: setHpWebsite },
+              { name: 'phone_alt', value: hpPhone, set: setHpPhone },
+              { name: 'fax', value: hpFax, set: setHpFax },
+            ].map(({ name: decoyName, value, set }) => (
+              <Box
+                key={decoyName}
+                component="input"
+                type="text"
+                name={decoyName}
+                value={value}
+                onChange={(e) => set(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                sx={{
+                  position: 'absolute',
+                  left: '-10000px',
+                  width: '1px',
+                  height: '1px',
+                  overflow: 'hidden',
+                }}
+              />
+            ))}
             <Box component="label" sx={labelSx}>// What are you thinking about?</Box>
             <Box
               sx={{
@@ -293,6 +319,19 @@ const Contact = () => {
                   </Box>
                 );
               })}
+            </Box>
+
+            <Box component="label" sx={labelSx}>// Your name</Box>
+            <Box sx={{ mb: '16px' }}>
+              <Box
+                component="input"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Jane Doe"
+                required
+                sx={inputSx}
+              />
             </Box>
 
             <Box component="label" sx={labelSx}>// Your email</Box>
