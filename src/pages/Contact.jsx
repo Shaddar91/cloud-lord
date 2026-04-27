@@ -330,6 +330,7 @@ const Contact = () => {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Jane Doe"
                 required
+                maxLength={100}
                 sx={inputSx}
               />
             </Box>
@@ -343,6 +344,7 @@ const Contact = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
                 required
+                maxLength={100}
                 sx={inputSx}
               />
             </Box>
@@ -353,8 +355,8 @@ const Contact = () => {
                 component="textarea"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="A few sentences about the stack, the team size, and what's broken or planned."
-                required
+                placeholder="A few sentences about the stack, the team size, and what's broken or planned. (optional)"
+                maxLength={5000}
                 sx={{ ...inputSx, minHeight: 110, lineHeight: 1.55, resize: 'vertical' }}
               />
             </Box>

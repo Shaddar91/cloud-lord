@@ -29,7 +29,7 @@ export async function submitInquiry(fields = {}) {
     name = '',
     email,
     subject,
-    message,
+    message = '',
     interests = [],
     company_address = '',
     website_url = '',
@@ -37,24 +37,40 @@ export async function submitInquiry(fields = {}) {
     fax = '',
   } = fields;
 
-  if (!email || !message) {
-    return { ok: false, mode: 'validation', error: 'email and message are required' };
+  if (!email) {
+    return { ok: false, mode: 'validation', error: 'email is required' };
   }
 
-  //Derive subject from interests if caller didn't pass one explicitly.
+  //Hard cap inputs client-side too (the inputs already enforce maxLength,
+  //but a programmatic caller could bypass that).
+  const safeName = String(name).slice(0, 100);
+  const safeEmail = String(email).slice(0, 100);
+  const safeMessage = String(message).slice(0, 5000);
+
+  //Subject = first interest (or fallback). Full interest list is prepended to
+  //the body below so the email always shows every selected topic, even when
+  //all 8 are picked.
   const derivedSubject =
     subject ||
     (interests.length > 0
-      ? `Inquiry: ${interests.slice(0, 3).join(' · ')}${interests.length > 3 ? ' + more' : ''}`
+      ? `Inquiry: ${interests[0]}${interests.length > 1 ? ` (+${interests.length - 1} more)` : ''}`
       : 'Inquiry from cloud-lord.com');
+
+  //Compose body: full interests block at the top, then the user's message
+  //(which is now optional — empty body is fine).
+  const interestsBlock =
+    interests.length > 0
+      ? `Topics (${interests.length}):\n${interests.map((t) => `  - ${t}`).join('\n')}\n\n`
+      : '';
+  const composedMessage = `${interestsBlock}${safeMessage}`.trimEnd();
 
   const nonce = await fetchNonce();
 
   const payload = {
-    name,
-    email,
+    name: safeName,
+    email: safeEmail,
     subject: derivedSubject,
-    message,
+    message: composedMessage,
     interests,
     company_address,
     website_url,
