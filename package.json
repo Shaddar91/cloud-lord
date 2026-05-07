@@ -18,13 +18,21 @@
     "@iconify/react": "^4.1.1",
     "@mui/icons-material": "^5.15.7",
     "@mui/material": "^5.15.6",
+    "gray-matter": "^4.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^6.21.3",
-    "react-scroll": "^1.9.0"
+    "react-scroll": "^1.9.0",
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-prism-plus": "^2.0.2",
+    "rehype-slug": "^6.0.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
+    "@prerenderer/renderer-puppeteer": "^1.2.4",
+    "@prerenderer/rollup-plugin": "^0.3.12",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react": "^4.2.1",
