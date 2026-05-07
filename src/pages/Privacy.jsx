@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Container, Stack, Typography, Grid, Box, Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@mui/material';
 import ControllerIdentityCard from '../components/privacy/ControllerIdentityCard';
 import ConsentToggle from '../components/privacy/ConsentToggle';
@@ -51,7 +52,12 @@ const DualCol = ({ label, body, cite }) => (
   </Box>
 );
 
-const Privacy = () => (
+const Privacy = () => {
+  useEffect(() => {
+    document.dispatchEvent(new Event('render-event'));
+  }, []);
+
+  return (
   <Container maxWidth="md" sx={{ py: { xs: '56px', md: '72px' } }}>
     <Stack spacing={0}>
       {/* Top meta: Last updated + title + lede */}
@@ -290,6 +296,7 @@ const Privacy = () => (
       </Box>
     </Stack>
   </Container>
-);
+  );
+};
 
 export default Privacy;
