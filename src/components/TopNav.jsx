@@ -100,6 +100,11 @@ const TopNav = () => {
                     <Box component="span" sx={navLinkSx}>process</Box>
                   </ScrollLink>
                 </li>
+                <li>
+                  <RouterLink to="/blog" style={{ textDecoration: 'none' }}>
+                    <Box component="span" sx={navLinkSx}>writing</Box>
+                  </RouterLink>
+                </li>
               </>
             ) : (
               <li>

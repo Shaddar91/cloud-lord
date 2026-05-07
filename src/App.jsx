@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
@@ -16,25 +17,33 @@ import Services from './pages/Services';
 import Process from './pages/Process';
 import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
+import BlogIndex from './pages/BlogIndex';
+import BlogPost from './pages/BlogPost';
 
-const HomePage = () => (
-  <>
-    <Hero />
-    <ProofStrip />
-    <Element name="about">
-      <About />
-    </Element>
-    <Element name="services">
-      <Services />
-    </Element>
-    <Element name="process">
-      <Process />
-    </Element>
-    <Element name="contact">
-      <Contact />
-    </Element>
-  </>
-);
+const HomePage = () => {
+  useEffect(() => {
+    document.dispatchEvent(new Event('render-event'));
+  }, []);
+
+  return (
+    <>
+      <Hero />
+      <ProofStrip />
+      <Element name="about">
+        <About />
+      </Element>
+      <Element name="services">
+        <Services />
+      </Element>
+      <Element name="process">
+        <Process />
+      </Element>
+      <Element name="contact">
+        <Contact />
+      </Element>
+    </>
+  );
+};
 
 function App() {
   return (
@@ -67,6 +76,8 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/blog" element={<BlogIndex />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
             </Routes>
           </Box>
           <Footer />
