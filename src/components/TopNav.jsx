@@ -73,47 +73,39 @@ const TopNav = () => {
             <span style={{ color: tokens.fg3 }}>t. ivanovic</span>
           </RouterLink>
 
-          <Box
-            component="ul"
-            sx={{
-              listStyle: 'none',
-              display: { xs: 'none', sm: 'flex' },
-              gap: '28px',
-              p: 0,
-              m: 0,
-            }}
-          >
-            {onHome ? (
-              <>
-                <li>
-                  <ScrollLink to="about" spy smooth duration={500} offset={-70} style={{ cursor: 'pointer' }}>
-                    <Box component="span" sx={navLinkSx}>about</Box>
-                  </ScrollLink>
-                </li>
-                <li>
-                  <ScrollLink to="services" spy smooth duration={500} offset={-70} style={{ cursor: 'pointer' }}>
-                    <Box component="span" sx={navLinkSx}>services</Box>
-                  </ScrollLink>
-                </li>
-                <li>
-                  <ScrollLink to="process" spy smooth duration={500} offset={-70} style={{ cursor: 'pointer' }}>
-                    <Box component="span" sx={navLinkSx}>process</Box>
-                  </ScrollLink>
-                </li>
-                <li>
-                  <RouterLink to="/blog" style={{ textDecoration: 'none' }}>
-                    <Box component="span" sx={navLinkSx}>writing</Box>
-                  </RouterLink>
-                </li>
-              </>
-            ) : (
+          {onHome ? (
+            <Box
+              component="ul"
+              sx={{
+                listStyle: 'none',
+                display: { xs: 'none', sm: 'flex' },
+                gap: '28px',
+                p: 0,
+                m: 0,
+              }}
+            >
               <li>
-                <RouterLink to="/" style={{ textDecoration: 'none' }}>
-                  <Box component="span" sx={navLinkSx}>back to site</Box>
+                <ScrollLink to="about" spy smooth duration={500} offset={-70} style={{ cursor: 'pointer' }}>
+                  <Box component="span" sx={navLinkSx}>about</Box>
+                </ScrollLink>
+              </li>
+              <li>
+                <ScrollLink to="services" spy smooth duration={500} offset={-70} style={{ cursor: 'pointer' }}>
+                  <Box component="span" sx={navLinkSx}>services</Box>
+                </ScrollLink>
+              </li>
+              <li>
+                <ScrollLink to="process" spy smooth duration={500} offset={-70} style={{ cursor: 'pointer' }}>
+                  <Box component="span" sx={navLinkSx}>process</Box>
+                </ScrollLink>
+              </li>
+              <li>
+                <RouterLink to="/blog" style={{ textDecoration: 'none' }}>
+                  <Box component="span" sx={navLinkSx}>writing</Box>
                 </RouterLink>
               </li>
-            )}
-          </Box>
+            </Box>
+          ) : null}
 
           {onHome ? (
             <ScrollLink to="contact" spy smooth duration={500} offset={-70} style={{ textDecoration: 'none' }}>

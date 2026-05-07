@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Box, Container } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import { getAllPosts } from '../lib/blogPosts';
+import { flushEmotionStyles } from '../lib/flushEmotionStyles';
 import BlogCard from '../components/BlogCard';
 import SectionHead from '../components/SectionHead';
 import { tokens } from '../theme';
@@ -10,6 +11,7 @@ const BlogIndex = () => {
   const posts = getAllPosts();
 
   useEffect(() => {
+    flushEmotionStyles();
     document.dispatchEvent(new Event('render-event'));
   }, []);
 

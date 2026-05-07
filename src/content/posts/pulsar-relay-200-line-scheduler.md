@@ -4,7 +4,6 @@ slug: pulsar-relay-200-line-scheduler
 date: 2026-05-22
 tags: [pulsar-relay, claude-code, ai-engineering, agent-orchestration, rust]
 excerpt: "Most LLM agent pools are happily concurrent. Sometimes you need them not to be — and when you do, LangGraph and Temporal are big tools for a small problem. Here's the small tool I wrote instead."
-hero: /images/blog/pulsar-relay-200-line-scheduler.png
 author: Tomislav Ivanović
 readingTime: 9
 ---

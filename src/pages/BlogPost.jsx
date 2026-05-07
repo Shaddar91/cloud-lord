@@ -9,6 +9,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypePrismPlus from 'rehype-prism-plus';
 
 import { getPostBySlug } from '../lib/blogPosts';
+import { flushEmotionStyles } from '../lib/flushEmotionStyles';
 import BlogPostMeta from '../components/BlogPostMeta';
 import { tokens } from '../theme';
 
@@ -268,6 +269,7 @@ const BlogPost = () => {
   const post = getPostBySlug(slug);
 
   useEffect(() => {
+    flushEmotionStyles();
     document.dispatchEvent(new Event('render-event'));
   }, [slug]);
 

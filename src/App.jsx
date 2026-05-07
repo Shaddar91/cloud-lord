@@ -19,9 +19,11 @@ import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
 import BlogIndex from './pages/BlogIndex';
 import BlogPost from './pages/BlogPost';
+import { flushEmotionStyles } from './lib/flushEmotionStyles';
 
 const HomePage = () => {
   useEffect(() => {
+    flushEmotionStyles();
     document.dispatchEvent(new Event('render-event'));
   }, []);
 

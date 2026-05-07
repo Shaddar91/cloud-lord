@@ -4,7 +4,6 @@ slug: self-hosted-matomo-hetzner
 date: 2026-05-29
 tags: [matomo, gdpr, hetzner, terraform, self-hosting, analytics]
 excerpt: "Google Analytics 4 with consent done wrong is a fine; consent done right kills your data. The third option is to host the analytics yourself. Here's how I built a Matomo stack that respects consent and doesn't lose half its data to it."
-hero: /images/blog/self-hosted-matomo-hetzner.png
 author: Tomislav Ivanović
 readingTime: 12
 ---
@@ -33,7 +32,7 @@ Two machines, one Vault, one S3 bucket. The website is a separate concern.
                                       │ matomo.js (after Accept)
                                       ▼
    ┌──────────────────────────────────────────────────────────┐
-   │  Hetzner CX VM      4n4l.cloud-lord.com                  │
+   │  Hetzner CX VM      analytics.example.com                │
    │                                                          │
    │   ┌─────────────┐   ┌──────────────┐   ┌──────────────┐  │
    │   │  matomo     │──▶│  mariadb     │   │ matomo-      │  │
@@ -50,16 +49,16 @@ Two machines, one Vault, one S3 bucket. The website is a separate concern.
                               │ mysqldump → tar → gpg → aws s3 cp
                               ▼
                   ┌────────────────────────────────┐
-                  │  s3://cloud-lord-matomo-       │
-                  │       backups (eu-central-1)   │
+                  │  s3://<matomo-backup-bucket>   │
+                  │       (eu-central-1)           │
                   │  versioning, SSE-S3, private   │
                   │  Glacier IR @ 30d, delete 180d │
                   └────────────────────────────────┘
 
-   Vault (HashiCorp): secret/cloud-lord/matomo/admin-password
-                      secret/cloud-lord/backups/gpg-passphrase-matomo
-                      secret/cloud-lord/matomo/db-root
-                      secret/cloud-lord/matomo/salt
+   Vault (HashiCorp): secret/<app>/matomo/admin-password
+                      secret/<app>/backups/gpg-passphrase-matomo
+                      secret/<app>/matomo/db-root
+                      secret/<app>/matomo/salt
 ```
 
 The host is a small Hetzner CX-class VM. The Matomo container talks to MariaDB over an internal Docker network. A third sidecar runs Matomo's archive cron so report aggregation does not fight live traffic. The application listens on `127.0.0.1:8090` only — a plain host nginx proxies in from the public side, terminates TLS, and applies an IP allowlist on the admin paths. That layout is one of the global invariants in my plan: containers expose internal ports, host nginx does the public-facing work. Matomo brings its own Apache, but Apache is invisible from outside the box.
@@ -105,7 +104,7 @@ output "matomo_backup_bucket_arn" {
 The variable, declared once in `variables.tf`, gets a concrete value in `terraform.tfvars`:
 
 ```hcl
-matomo_backup_bucket_name = "cloud-lord-matomo-backups"
+matomo_backup_bucket_name = "<your-matomo-backup-bucket>"
 ```
 
 The host already has an IAM role attached for the transcription pipeline, so the policy work is a one-line widening rather than a new role. Per my own rule, IAM policy changes happen by editing the JSON policy file and `terraform apply` — never via the AWS Console.
@@ -138,8 +137,8 @@ The website is a React + MUI single-page app. There are exactly two pieces wired
 ```jsx
 import { useEffect } from 'react';
 
-const TRACKER_URL = 'https://4n4l.cloud-lord.com/matomo.php';
-const SCRIPT_URL  = 'https://4n4l.cloud-lord.com/matomo.js';
+const TRACKER_URL = 'https://analytics.example.com/matomo.php';
+const SCRIPT_URL  = 'https://analytics.example.com/matomo.js';
 const SITE_ID     = '1';
 
 const TrackingProvider = ({ children }) => {
@@ -204,7 +203,7 @@ There is one detail in the website that exists only to keep the deploy boring. `
 </head>
 ```
 
-Right now the runtime `<TrackingProvider>` is what actually appends the `matomo.js` script. The slot is the seam for the build-time alternative: the deploy pipeline can swap `<!-- MATOMO_TRACKING_SLOT -->` for a hard-coded `<script>` block at build time, picking the site ID and tracker URL from environment variables. That way the production build hard-codes a `4n4l.cloud-lord.com` site ID `1` snippet, while a staging build can hard-code a different site ID against a different Matomo instance, and neither needs a code change.
+Right now the runtime `<TrackingProvider>` is what actually appends the `matomo.js` script. The slot is the seam for the build-time alternative: the deploy pipeline can swap `<!-- MATOMO_TRACKING_SLOT -->` for a hard-coded `<script>` block at build time, picking the site ID and tracker URL from environment variables. That way the production build hard-codes the production tracker host and site ID, while a staging build can hard-code a different site ID against a different Matomo instance, and neither needs a code change.
 
 The pattern in the GitHub Actions workflow looks like this — three lines in the build step before `npm run build`:
 
@@ -216,9 +215,11 @@ The pattern in the GitHub Actions workflow looks like this — three lines in th
     MATOMO_SNIPPET: ${{ vars.MATOMO_SNIPPET }}
 ```
 
-Why bother, when the runtime provider already does the same thing? Two reasons. First, an inline snippet in the HTML head fires before the React bundle parses, which is the right order if you ever need to count visitors who bounced before the JS loaded. Second, the inline path means the analytics call is not coupled to the `requireConsent` queue being pushed before the script tag is added — both are queued into `_paq` regardless of order, which is the whole point of Matomo's command-queue design. Either path is honest, but the inline path is more resilient to a future refactor of the React app.
+Why bother, when the runtime provider already does the same thing? Two reasons. First, an inline snippet in the HTML head fires before the React bundle parses, which is the right order if you ever need to count visitors who bounced before the JS loaded. Second, the inline path means the analytics call is not coupled to the `requireConsent` queue being pushed before the script tag is added — both are queued into `_paq` regardless of order, which is the whole point of Matomo's command-queue design. Either path is honest, but the inline path is more resilient to a future refactor of the React app. The build-time snippet picks up its tracker URL and site ID from environment variables; production and staging point at different Matomo instances without a code change.
 
 Hard-coding the snippet directly into `index.html` would work for a single environment. The slot pattern works for any number of environments without forking the file.
+
+The deploy itself runs through a GitHub Actions workflow that authenticates to AWS with OIDC — no long-lived access keys on disk anywhere — and the website environment exposes the tracker URL and site ID as workflow vars rather than secrets, since neither is sensitive on its own.
 
 ## S3-encrypted backups
 
@@ -239,7 +240,7 @@ ENCRYPTED="$TARBALL.gpg"
 #1. Dump the live database from inside the running container.
 docker exec matomo-mariadb \
   mysqldump --single-transaction --routines --triggers \
-    -uroot -p"$(vault kv get -field=password secret/cloud-lord/matomo/db-root)" \
+    -uroot -p"$(vault kv get -field=password secret/<app>/matomo/db-root)" \
     matomo > "$DB_DUMP"
 
 #2. Tar the dump together with the matomo_web_data volume contents.
@@ -248,13 +249,13 @@ tar -cf "$TARBALL" \
   -C /var/lib/docker/volumes/matomo_web_data/_data .
 
 #3. Symmetric AES256 with the passphrase from Vault. No keyring on the host.
-GPG_PASS=$(vault kv get -field=passphrase secret/cloud-lord/backups/gpg-passphrase-matomo)
+GPG_PASS=$(vault kv get -field=passphrase secret/<app>/backups/gpg-passphrase-matomo)
 echo "$GPG_PASS" | gpg --batch --yes --passphrase-fd 0 \
   --symmetric --cipher-algo AES256 \
   --output "$ENCRYPTED" "$TARBALL"
 
 #4. Upload the encrypted artifact to S3 — never the plaintext tarball.
-aws s3 cp "$ENCRYPTED" "s3://cloud-lord-matomo-backups/${DATE}/$(basename "$ENCRYPTED")"
+aws s3 cp "$ENCRYPTED" "s3://<your-matomo-backup-bucket>/${DATE}/$(basename "$ENCRYPTED")"
 ```
 
 Why GPG-then-S3 in that order, instead of leaning on SSE-S3 alone? SSE-S3 protects the bytes at rest in AWS. It does not protect them in transit on my host, in the staging temp file, or in the rare case where AWS itself is the threat model — a leaked role, a misconfigured policy, a future region-wide audit dump. AES256 with a Vault-held passphrase means the bucket can be world-readable by accident and the contents are still ciphertext. The bucket is not world-readable; this is defense-in-depth, and the cost is one more line of script.
@@ -270,8 +271,7 @@ A short and honest list, because the post is not done if I do not write it.
 - The Matomo container restart kills active sessions. There is no rolling-update gymnastics here; this is one box, one container. If I bump the Matomo image, every visitor who is mid-page-view at that second loses their session-continuation cookie. I do the bumps at 04:00 UTC and accept the cost.
 - There is no point-in-time recovery on the database. The backups are nightly snapshots. Lose the host between snapshots, and you lose up to 24 hours of analytics. I do not care enough about analytics to pay for binlog shipping; if you do, MariaDB binlogs streamed to S3 are the obvious add-on.
 - The consent banner is a bit aggressive on first load. Even with the 500 ms delay, on a slow connection the page paint and the snackbar appear close enough together that returning users with cleared local storage occasionally complain. A more sophisticated build would defer the banner until after the first scroll or the first interaction.
-- The IP allowlist on the admin paths is brittle. My home IP changes when I swap to mobile data. I have made peace with bouncing through a small VPN exit when I need the admin UI, but a smarter setup would put the admin behind an SSO bouncer instead of a static allowlist.
-- I am not running the Matomo `TwoFactorAuth` plugin on operator login because of a forgotten setup step — only on the admin account. That is on the punch list.
+- The IP allowlist on the admin paths is brittle. Home IPs change when you swap to mobile data. Bouncing through a small VPN exit works, but a smarter setup would put the admin behind an SSO bouncer instead of a static allowlist.
 
 None of these block the stack from being useful. They are the things I would tighten in the next pass.
 
@@ -282,7 +282,7 @@ The full module shape is in my private infrastructure-automation repo, but the r
 - One Terraform environment per backup bucket. Reuse a `private_versioned_bucket` module — versioning on, SSE-S3, lifecycle to Glacier IR at 30 days, expire at 180 days, fully private.
 - Extend the S3 access IAM policy file in place; do not invent a new role.
 - One Matomo repo with `docker-compose.template.yml` (services: `matomo:5-apache`, `mariadb:11`, archiver sidecar; `mem_limit: 400m / 250m / 150m`; persistent volumes; expose Matomo on `127.0.0.1:8090` only).
-- Vault paths under `secret/cloud-lord/matomo/...` for admin password, DB root, salt, and the GPG passphrase under `secret/cloud-lord/backups/...`.
+- Vault paths under `secret/<app>/matomo/...` for admin password, DB root, salt, and the GPG passphrase under `secret/<app>/backups/...`.
 - `scripts/server-install.sh` reads those out of Vault, writes them to a deploy-time `.env`, pulls the rendered `docker-compose.yml` from artifact S3, and `docker compose up -d`.
 - `scripts/backup.sh` (above) on a cron, `scripts/restore.sh` for the drill.
 - Host nginx vhost for the public hostname, IP-allowlisted on `/admin/*` and `/index.php?module=Login*`, HSTS plus `X-Robots-Tag: noindex, nofollow` on the admin paths so Matomo's login page never shows up in search.

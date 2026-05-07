@@ -4,7 +4,6 @@ slug: from-dictation-to-deploy-mailcow
 date: 2026-05-15
 tags: [ai-engineering, pulsar-relay, claude-code, voice-automation, mailcow]
 excerpt: "I dictated a sentence at 2 AM. Six hours and 14 sequential agent components later, I had a self-hosted Mailcow instance with encrypted S3 backups. Here's the full chain."
-hero: /images/blog/from-dictation-to-deploy-mailcow.png
 author: Tomislav Ivanović
 readingTime: 11
 ---
@@ -73,9 +72,9 @@ Track B: Encrypted backups + restore drill
   B8 — Restore drill: run B7, sample-compare against live mailboxes
 ```
 
-Every component named one agent. `bash-scripting-expert` got most of Track A and all of Track B. The mailbox creation step talked to the mailcow REST API directly — no UI clicking. Passwords and the GPG passphrase landed in Vault under namespaced paths (`secret/cloud-lord/mail/engineering`, `secret/cloud-lord/backups/gpg-passphrase-mail`) and were never written to disk in plaintext.
+Every component named one agent. `bash-scripting-expert` got most of Track A and all of Track B. The mailbox creation step talked to the mailcow REST API directly — no UI clicking. Passwords and the GPG passphrase landed in Vault under namespaced paths (`secret/<app>/mail/engineering`, `secret/<app>/backups/gpg-passphrase-mail`) and were never written to disk in plaintext.
 
-The backup script wraps mailcow's own `helper-scripts/backup_and_restore.sh` rather than rolling something custom. Each tarball gets symmetrically encrypted with AES256, keyed off the Vault passphrase, and dropped into `s3://cloud-lord-mail-backups/YYYY/MM/DD/`. A second JSON artifact in the same upload contains a REST API dump of the alias and mailbox configuration — that's deliberate, because if the mailcow data volume is recoverable but the alias config has drifted, you want the metadata snapshot to compare against.
+The backup script wraps mailcow's own `helper-scripts/backup_and_restore.sh` rather than rolling something custom. Each tarball gets symmetrically encrypted with AES256, keyed off the Vault passphrase, and dropped into `s3://<your-mail-backup-bucket>/YYYY/MM/DD/`. A second JSON artifact in the same upload contains a REST API dump of the alias and mailbox configuration — that's deliberate, because if the mailcow data volume is recoverable but the alias config has drifted, you want the metadata snapshot to compare against.
 
 The restore drill — Component B8 — is the part I care most about. It pulls the most recent encrypted archive from S3, decrypts it with the Vault passphrase to `/tmp/mailcow-restore/`, runs `tar -tf` to list contents, and samples a handful of mailboxes to compare structure against the live system. It does not auto-apply. Auto-applying a restore from inside the same plan that produced the backup is the kind of automation that bites you the day a corrupted archive cascades into prod. The drill is a sanity check, not a failover.
 
@@ -90,7 +89,7 @@ The first run of this plan died at the preflight component, before any mailcow c
 ```
 ≥10 GB free disk            PASS  (24 GB)
 ports 25, 465, 587, 993, 995 free  PASS
-port 8080 free              FAIL  — held by yt-transcript-fastapi
+port 8080 free              FAIL  — held by another internal service
 port 8443 free              PASS
 no host-level MTA           PASS
 ports 80/443 held by nginx  PASS
@@ -99,7 +98,7 @@ outbound 25 + 587 reachable PASS
 no docker network overlap   PASS
 ```
 
-Two blockers. The port conflict was a five-minute fix: I remapped the existing transcribe-processing container off port 8080 to 8090 and updated its nginx vhost to match. The RAM blocker was a hardware ceiling. The Hetzner server I was running was a cx22 with 3.7 GB total — Mailcow's own recommendation is 6 GB for stable operation, and the plan was checking for at least 4 GB available. There is no way to satisfy that constraint by stopping services, because the server can't even meet it with zero workload.
+Two blockers. The port conflict was a five-minute fix: I remapped an existing internal container off port 8080 to a free port and updated its nginx vhost to match. The RAM blocker was a hardware ceiling. The Hetzner server I was running was a cx22 with 3.7 GB total — Mailcow's own recommendation is 6 GB for stable operation, and the plan was checking for at least 4 GB available. There is no way to satisfy that constraint by stopping services, because the server can't even meet it with zero workload.
 
 So I resized the box up to a cx32 with 8 GB. That's the part that doesn't fit any "voice automation shipped this for me" narrative — I made a billing decision, kicked off a Hetzner resize, waited for the box to come back up, and re-ran the preflight component manually. Then the plan continued.
 

@@ -6,6 +6,7 @@ import ForgetMeButton from '../components/privacy/ForgetMeButton';
 import LastUpdated from '../components/privacy/LastUpdated';
 import { tokens } from '../theme';
 import { track, trackGoal, GOALS } from '../lib/tracking';
+import { flushEmotionStyles } from '../lib/flushEmotionStyles';
 
 const onMailto = () => { track('Outbound', 'Email'); trackGoal(GOALS.OUTBOUND_EMAIL); };
 
@@ -54,6 +55,7 @@ const DualCol = ({ label, body, cite }) => (
 
 const Privacy = () => {
   useEffect(() => {
+    flushEmotionStyles();
     document.dispatchEvent(new Event('render-event'));
   }, []);
 
