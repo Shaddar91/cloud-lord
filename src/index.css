@@ -1,0 +1,28 @@
+/* Base reset + font bootstrap. Design tokens live in src/theme.js. */
+:root {
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  color-scheme: dark;
+  color: oklch(96% 0.005 250);
+  background-color: oklch(16% 0.012 250);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: oklch(16% 0.012 250);
+  color: oklch(96% 0.005 250);
+}
+
+a { color: inherit; text-decoration: none; }
+
+::selection { background: oklch(80% 0.14 180); color: oklch(16% 0.012 250); }
