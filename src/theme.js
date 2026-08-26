@@ -12,7 +12,7 @@ export const tokens = {
   line2: 'oklch(38% 0.018 250)',
   fg: 'oklch(96% 0.005 250)',
   fg2: 'oklch(78% 0.01 250)',
-  fg3: 'oklch(58% 0.012 250)',
+  fg3: 'oklch(64% 0.012 250)',
   accent: 'oklch(80% 0.14 180)',
   accentDim: 'oklch(55% 0.09 180)',
   warn: 'oklch(78% 0.14 60)',
