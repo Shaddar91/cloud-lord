@@ -16,9 +16,9 @@ export const tokens = {
   accent: 'oklch(80% 0.14 180)',
   accentDim: 'oklch(55% 0.09 180)',
   warn: 'oklch(78% 0.14 60)',
-  mono: `'JetBrains Mono', ui-monospace, monospace`,
-  display: `'Inter Tight', 'Inter', system-ui, sans-serif`,
-  body: `'Inter', system-ui, sans-serif`,
+  mono: `'JetBrains Mono', 'JetBrains Mono fallback', ui-monospace, monospace`,
+  display: `'Inter Tight', 'Inter Tight fallback', 'Inter', system-ui, sans-serif`,
+  body: `'Inter', 'Inter fallback', system-ui, sans-serif`,
 };
 
 const theme = createTheme({
