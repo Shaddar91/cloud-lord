@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Element } from 'react-scroll';
 import { Box } from '@mui/material';
 
 import theme, { tokens } from './theme';
@@ -32,18 +31,18 @@ const HomePage = () => {
     <>
       <Hero />
       <ProofStrip />
-      <Element name="about">
+      <Box id="about" sx={{ scrollMarginTop: '70px' }}>
         <About />
-      </Element>
-      <Element name="services">
+      </Box>
+      <Box id="services" sx={{ scrollMarginTop: '70px' }}>
         <Services />
-      </Element>
-      <Element name="process">
+      </Box>
+      <Box id="process" sx={{ scrollMarginTop: '70px' }}>
         <Process />
-      </Element>
-      <Element name="contact">
+      </Box>
+      <Box id="contact" sx={{ scrollMarginTop: '70px' }}>
         <Contact />
-      </Element>
+      </Box>
     </>
   );
 };
