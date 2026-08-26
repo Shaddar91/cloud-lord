@@ -29,4 +29,7 @@ export default defineConfig({
       rendererOptions: { renderAfterDocumentEvent: 'render-event' },
     }),
   ],
+  build: {
+    sourcemap: true,
+  },
 })

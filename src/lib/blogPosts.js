@@ -1,3 +1,4 @@
+import '../polyfills'
 import matter from 'gray-matter'
 
 const modules = import.meta.glob('../content/posts/*.md', { as: 'raw', eager: true })

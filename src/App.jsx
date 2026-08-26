@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
@@ -16,10 +16,11 @@ import About from './pages/About';
 import Services from './pages/Services';
 import Process from './pages/Process';
 import Contact from './pages/Contact';
-import Privacy from './pages/Privacy';
-import BlogIndex from './pages/BlogIndex';
-import BlogPost from './pages/BlogPost';
 import { flushEmotionStyles } from './lib/flushEmotionStyles';
+
+const Privacy = lazy(() => import('./pages/Privacy'));
+const BlogIndex = lazy(() => import('./pages/BlogIndex'));
+const BlogPost = lazy(() => import('./pages/BlogPost'));
 
 const HomePage = () => {
   useEffect(() => {
@@ -75,12 +76,14 @@ function App() {
         >
           <TopNav />
           <Box component="main" sx={{ flex: 1 }}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/blog" element={<BlogIndex />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
-            </Routes>
+            <Suspense fallback={<Box sx={{ minHeight: '60vh' }} />}>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/blog" element={<BlogIndex />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+              </Routes>
+            </Suspense>
           </Box>
           <Footer />
           <ConsentBanner />
