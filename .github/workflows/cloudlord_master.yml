@@ -27,7 +27,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20.9.0
-      # Upload the app on S3 bucket
+      #Upload the app on S3 bucket
       - name: Build React App and upload to S3
         id: build-project
         run: |
@@ -36,9 +36,10 @@ jobs:
           mv robots.txt dist/
           cd dist
           echo "google-site-verification: ${{ secrets.GOOGLE_VERIFICATION }}" > ${{ secrets.GOOGLE_VERIFICATION }}
-          aws s3 sync . s3://${{ secrets.BUCKET }} --cache-control "max-age=120000" --delete --exclude ".git/*" --exclude ".github/*" --exclude "README*"
+          aws s3 sync assets/ s3://${{ secrets.BUCKET }}/assets --cache-control "public,max-age=31536000,immutable" --delete --exclude ".git/*" --exclude ".github/*" --exclude "README*"
+          aws s3 sync . s3://${{ secrets.BUCKET }} --cache-control "public,max-age=300,must-revalidate" --delete --exclude "assets/*" --exclude ".git/*" --exclude ".github/*" --exclude "README*"
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2
         env:
-          DISTRIBUTION: ${{ secrets.DISTRIBUTION_ID }}
-          PATHS: "/*"
+          DISTRIBUTION: ${{ secrets.CLOUDLORD_DISTRIBUTION_ID }}
+          PATHS: "/ /index.html /robots.txt /sitemap.xml /llms.txt /feed*"
