@@ -2,7 +2,7 @@ import { Box, Container } from '@mui/material';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { tokens } from '../theme';
 import { scrollToSection } from '../lib/scrollToSection';
-import logo from '../assets/logo-crown.png';
+import logo from '../assets/logo-crown-64.webp';
 
 const navLinkSx = {
   display: 'flex',
@@ -61,6 +61,8 @@ const TopNav = () => {
             <img
               src={logo}
               alt="Cloud Lord"
+              width={30}
+              height={30}
               style={{
                 width: 30,
                 height: 30,
