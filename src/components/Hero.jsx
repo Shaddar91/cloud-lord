@@ -1,6 +1,6 @@
 import { Box, Container } from '@mui/material';
-import { Link as ScrollLink } from 'react-scroll';
 import { tokens } from '../theme';
+import { scrollToSection } from '../lib/scrollToSection';
 
 const Hero = () => {
   return (
@@ -101,7 +101,7 @@ const Hero = () => {
             </Box>
 
             <Box sx={{ display: 'flex', gap: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <ScrollLink to="contact" spy smooth duration={500} offset={-70} style={{ textDecoration: 'none' }}>
+              <Box component="a" href="/#contact" onClick={scrollToSection('contact')} sx={{ textDecoration: 'none' }}>
                 <Box
                   component="span"
                   sx={{
@@ -122,8 +122,8 @@ const Hero = () => {
                 >
                   Send an inquiry &rarr;
                 </Box>
-              </ScrollLink>
-              <ScrollLink to="services" spy smooth duration={500} offset={-70} style={{ textDecoration: 'none' }}>
+              </Box>
+              <Box component="a" href="/#services" onClick={scrollToSection('services')} sx={{ textDecoration: 'none' }}>
                 <Box
                   component="span"
                   sx={{
@@ -143,7 +143,7 @@ const Hero = () => {
                 >
                   See services
                 </Box>
-              </ScrollLink>
+              </Box>
             </Box>
           </Box>
 

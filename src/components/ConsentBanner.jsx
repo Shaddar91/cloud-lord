@@ -92,7 +92,7 @@ const ConsentBanner = () => {
           <Box
             component={RouterLink}
             to="/privacy"
-            sx={{ color: tokens.accent, textDecoration: 'none', '&:hover': { color: tokens.fg } }}
+            sx={{ color: tokens.accent, textDecoration: 'underline', '&:hover': { color: tokens.fg } }}
           >
             Read the privacy policy &rarr;
           </Box>

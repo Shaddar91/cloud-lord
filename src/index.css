@@ -1,6 +1,33 @@
 /* Base reset + font bootstrap. Design tokens live in src/theme.js. */
+@font-face {
+  font-family: 'Inter fallback';
+  src: local('Arial');
+  size-adjust: 107.12%;
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Inter Tight fallback';
+  src: local('Arial');
+  size-adjust: 96.39%;
+  ascent-override: 100.51%;
+  descent-override: 25.03%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono fallback';
+  src: local('Courier New');
+  size-adjust: 99.98%;
+  ascent-override: 102.02%;
+  descent-override: 30%;
+  line-gap-override: 0%;
+}
+
 :root {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Inter', 'Inter fallback', system-ui, sans-serif;
   line-height: 1.6;
   font-weight: 400;
   color-scheme: dark;

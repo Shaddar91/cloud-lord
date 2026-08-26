@@ -81,7 +81,7 @@ const Process = () => (
               {step.tag}
             </Box>
             <Box
-              component="h4"
+              component="h3"
               sx={{
                 fontFamily: tokens.display,
                 fontSize: 17,

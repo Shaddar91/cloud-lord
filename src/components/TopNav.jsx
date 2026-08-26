@@ -1,8 +1,8 @@
 import { Box, Container } from '@mui/material';
-import { Link as ScrollLink } from 'react-scroll';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { tokens } from '../theme';
-import logo from '../assets/logo-crown.png';
+import { scrollToSection } from '../lib/scrollToSection';
+import logo from '../assets/logo-crown-64.webp';
 
 const navLinkSx = {
   display: 'flex',
@@ -61,6 +61,8 @@ const TopNav = () => {
             <img
               src={logo}
               alt="Cloud Lord"
+              width={30}
+              height={30}
               style={{
                 width: 30,
                 height: 30,
@@ -73,45 +75,42 @@ const TopNav = () => {
             <span style={{ color: tokens.fg3 }}>t. ivanovic</span>
           </RouterLink>
 
-          <Box
-            component="ul"
-            sx={{
-              listStyle: 'none',
-              display: { xs: 'none', sm: 'flex' },
-              gap: '28px',
-              p: 0,
-              m: 0,
-            }}
-          >
-            {onHome ? (
-              <>
-                <li>
-                  <ScrollLink to="about" spy smooth duration={500} offset={-70} style={{ cursor: 'pointer' }}>
-                    <Box component="span" sx={navLinkSx}>about</Box>
-                  </ScrollLink>
-                </li>
-                <li>
-                  <ScrollLink to="services" spy smooth duration={500} offset={-70} style={{ cursor: 'pointer' }}>
-                    <Box component="span" sx={navLinkSx}>services</Box>
-                  </ScrollLink>
-                </li>
-                <li>
-                  <ScrollLink to="process" spy smooth duration={500} offset={-70} style={{ cursor: 'pointer' }}>
-                    <Box component="span" sx={navLinkSx}>process</Box>
-                  </ScrollLink>
-                </li>
-              </>
-            ) : (
+          {onHome ? (
+            <Box
+              component="ul"
+              sx={{
+                listStyle: 'none',
+                display: { xs: 'none', sm: 'flex' },
+                gap: '28px',
+                p: 0,
+                m: 0,
+              }}
+            >
               <li>
-                <RouterLink to="/" style={{ textDecoration: 'none' }}>
-                  <Box component="span" sx={navLinkSx}>back to site</Box>
+                <Box component="a" href="/#about" onClick={scrollToSection('about')} sx={{ textDecoration: 'none' }}>
+                  <Box component="span" sx={navLinkSx}>about</Box>
+                </Box>
+              </li>
+              <li>
+                <Box component="a" href="/#services" onClick={scrollToSection('services')} sx={{ textDecoration: 'none' }}>
+                  <Box component="span" sx={navLinkSx}>services</Box>
+                </Box>
+              </li>
+              <li>
+                <Box component="a" href="/#process" onClick={scrollToSection('process')} sx={{ textDecoration: 'none' }}>
+                  <Box component="span" sx={navLinkSx}>process</Box>
+                </Box>
+              </li>
+              <li>
+                <RouterLink to="/blog" style={{ textDecoration: 'none' }}>
+                  <Box component="span" sx={navLinkSx}>writing</Box>
                 </RouterLink>
               </li>
-            )}
-          </Box>
+            </Box>
+          ) : null}
 
           {onHome ? (
-            <ScrollLink to="contact" spy smooth duration={500} offset={-70} style={{ textDecoration: 'none' }}>
+            <Box component="a" href="/#contact" onClick={scrollToSection('contact')} sx={{ textDecoration: 'none' }}>
               <Box
                 component="span"
                 sx={{
@@ -130,7 +129,7 @@ const TopNav = () => {
               >
                 book intro &rarr;
               </Box>
-            </ScrollLink>
+            </Box>
           ) : (
             <RouterLink to="/" style={{ textDecoration: 'none' }}>
               <Box

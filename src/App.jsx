@@ -1,8 +1,8 @@
+import { lazy, Suspense, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Element } from 'react-scroll';
 import { Box } from '@mui/material';
 
 import theme, { tokens } from './theme';
@@ -15,26 +15,37 @@ import About from './pages/About';
 import Services from './pages/Services';
 import Process from './pages/Process';
 import Contact from './pages/Contact';
-import Privacy from './pages/Privacy';
+import { flushEmotionStyles } from './lib/flushEmotionStyles';
 
-const HomePage = () => (
-  <>
-    <Hero />
-    <ProofStrip />
-    <Element name="about">
-      <About />
-    </Element>
-    <Element name="services">
-      <Services />
-    </Element>
-    <Element name="process">
-      <Process />
-    </Element>
-    <Element name="contact">
-      <Contact />
-    </Element>
-  </>
-);
+const Privacy = lazy(() => import('./pages/Privacy'));
+const BlogIndex = lazy(() => import('./pages/BlogIndex'));
+const BlogPost = lazy(() => import('./pages/BlogPost'));
+
+const HomePage = () => {
+  useEffect(() => {
+    flushEmotionStyles();
+    document.dispatchEvent(new Event('render-event'));
+  }, []);
+
+  return (
+    <>
+      <Hero />
+      <ProofStrip />
+      <Box id="about" sx={{ scrollMarginTop: '70px' }}>
+        <About />
+      </Box>
+      <Box id="services" sx={{ scrollMarginTop: '70px' }}>
+        <Services />
+      </Box>
+      <Box id="process" sx={{ scrollMarginTop: '70px' }}>
+        <Process />
+      </Box>
+      <Box id="contact" sx={{ scrollMarginTop: '70px' }}>
+        <Contact />
+      </Box>
+    </>
+  );
+};
 
 function App() {
   return (
@@ -64,10 +75,14 @@ function App() {
         >
           <TopNav />
           <Box component="main" sx={{ flex: 1 }}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/privacy" element={<Privacy />} />
-            </Routes>
+            <Suspense fallback={<Box sx={{ minHeight: '60vh' }} />}>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/blog" element={<BlogIndex />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+              </Routes>
+            </Suspense>
           </Box>
           <Footer />
           <ConsentBanner />

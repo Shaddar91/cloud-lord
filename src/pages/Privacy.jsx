@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Container, Stack, Typography, Grid, Box, Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@mui/material';
 import ControllerIdentityCard from '../components/privacy/ControllerIdentityCard';
 import ConsentToggle from '../components/privacy/ConsentToggle';
@@ -5,6 +6,7 @@ import ForgetMeButton from '../components/privacy/ForgetMeButton';
 import LastUpdated from '../components/privacy/LastUpdated';
 import { tokens } from '../theme';
 import { track, trackGoal, GOALS } from '../lib/tracking';
+import { flushEmotionStyles } from '../lib/flushEmotionStyles';
 
 const onMailto = () => { track('Outbound', 'Email'); trackGoal(GOALS.OUTBOUND_EMAIL); };
 
@@ -51,7 +53,13 @@ const DualCol = ({ label, body, cite }) => (
   </Box>
 );
 
-const Privacy = () => (
+const Privacy = () => {
+  useEffect(() => {
+    flushEmotionStyles();
+    document.dispatchEvent(new Event('render-event'));
+  }, []);
+
+  return (
   <Container maxWidth="md" sx={{ py: { xs: '56px', md: '72px' } }}>
     <Stack spacing={0}>
       {/* Top meta: Last updated + title + lede */}
@@ -290,6 +298,7 @@ const Privacy = () => (
       </Box>
     </Stack>
   </Container>
-);
+  );
+};
 
 export default Privacy;
