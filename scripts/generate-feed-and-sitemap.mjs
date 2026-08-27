@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import matter from 'gray-matter'
@@ -33,6 +33,7 @@ function toIsoDate(date) {
 }
 
 function loadPosts() {
+  if (!existsSync(POSTS_DIR)) return []
   const files = readdirSync(POSTS_DIR).filter((f) => f.endsWith('.md'))
   return files
     .map((file) => {
