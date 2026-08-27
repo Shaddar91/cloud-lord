@@ -18,13 +18,13 @@ const BlogIndex = () => {
   return (
     <>
       <Helmet>
-        <title>Writing &mdash; Cloud Lord</title>
+        <title>Blog &mdash; Cloud Lord</title>
         <meta
           name="description"
           content="Engineering notes from running an AI consultancy stack. AWS platform engineering, automation, and AI enablement, written by Tomislav Ivanović."
         />
         <link rel="canonical" href="https://cloud-lord.com/blog" />
-        <meta property="og:title" content="Writing &mdash; Cloud Lord" />
+        <meta property="og:title" content="Blog &mdash; Cloud Lord" />
         <meta
           property="og:description"
           content="Engineering notes from running an AI consultancy stack."
@@ -48,25 +48,39 @@ const BlogIndex = () => {
           <SectionHead
             tagNumber="04"
             tagLabel="blog"
-            title="writing"
+            title="blog"
             subtitle="engineering notes from running an AI consultancy stack"
           />
 
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: {
-                xs: '1fr',
-                sm: 'repeat(2, 1fr)',
-                md: 'repeat(3, 1fr)',
-              },
-              gap: '20px',
-            }}
-          >
-            {posts.map((post) => (
-              <BlogCard key={post.slug} post={post} />
-            ))}
-          </Box>
+          {posts.length === 0 ? (
+            <Box
+              component="p"
+              sx={{
+                fontFamily: tokens.mono,
+                fontSize: 14,
+                color: tokens.fg2,
+                m: 0,
+              }}
+            >
+              No posts yet.
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)',
+                },
+                gap: '20px',
+              }}
+            >
+              {posts.map((post) => (
+                <BlogCard key={post.slug} post={post} />
+              ))}
+            </Box>
+          )}
         </Container>
       </Box>
     </>

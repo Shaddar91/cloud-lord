@@ -10,8 +10,5 @@
 - [Process](https://cloud-lord.com/#process): How a Cloud Lord engagement runs, end to end.
 - [Contact](https://cloud-lord.com/#contact): How to get in touch.
 - [Blog](https://cloud-lord.com/blog): Essays on self-hosting, agent orchestration, and infrastructure work.
-- [From dictation to deploy: how I shipped a Mailcow stack via voice-driven Pulsar Relay plans](https://cloud-lord.com/blog/from-dictation-to-deploy-mailcow): A 2 AM voice dictation became a self-hosted Mailcow instance with encrypted S3 backups via 14 sequential agent components.
-- [Pulsar Relay: a 200-line task scheduler I built to keep my agent pool sequential when I needed it](https://cloud-lord.com/blog/pulsar-relay-200-line-scheduler): LangGraph and Temporal are big tools for a small problem — this is the small tool written instead.
-- [Building a self-hosted Matomo with consent-gated tracking on Hetzner](https://cloud-lord.com/blog/self-hosted-matomo-hetzner): A Matomo stack with Terraform, Vault, and S3 backups that respects consent without losing half the data to it.
 - [Privacy](https://cloud-lord.com/privacy): What data this site collects and how consent is handled.
 - [Donate](https://cloud-lord.com/donate): Support the work with a crypto donation.

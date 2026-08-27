@@ -285,7 +285,7 @@ const BlogPost = () => {
           The post you&rsquo;re looking for doesn&rsquo;t exist or has been moved.
         </Box>
         <Box component={RouterLink} to="/blog" sx={notFoundLinkSx}>
-          &larr; Back to writing
+          &larr; Back to blog
         </Box>
       </Container>
     );

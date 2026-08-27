@@ -103,7 +103,7 @@ const TopNav = () => {
               </li>
               <li>
                 <RouterLink to="/blog" style={{ textDecoration: 'none' }}>
-                  <Box component="span" sx={navLinkSx}>writing</Box>
+                  <Box component="span" sx={navLinkSx}>blog</Box>
                 </RouterLink>
               </li>
             </Box>
