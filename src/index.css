@@ -29,13 +29,21 @@
   line-gap-override: 0%;
 }
 
-/* Below-fold weights: hand-declared (not fontsource imports) so font-display: optional applies. */
+/* Hand-declared (not fontsource imports) so font-display: optional applies — no post-render swap shift. */
 @font-face {
   font-family: 'Inter';
   font-style: normal;
   font-display: optional;
   font-weight: 600;
   src: url('../node_modules/@fontsource/inter/files/inter-latin-600-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-display: optional;
+  font-weight: 600;
+  src: url('../node_modules/@fontsource/inter-tight/files/inter-tight-latin-600-normal.woff2') format('woff2');
 }
 
 @font-face {
